@@ -24,11 +24,8 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
   if (!athlete) return { title: "Athlete Not Found" }
 
   const age = new Date().getFullYear() - new Date(athlete.dateOfBirth).getFullYear()
-  const title = `${athlete.name} — ${athlete.position}`
-  const description = `${athlete.name} is a ${athlete.nationality} ${athlete.position.toLowerCase()} at ${athlete.team}, ${age} years old. Represented by Gayduo Sports Agency — ${athlete.stats.appearances} appearances, ${athlete.stats.goals} goals, ${athlete.stats.assists} assists.`
-  const imageUrl = athlete.image.startsWith("http")
-    ? athlete.image
-    : `https://gayduosa.org${athlete.image}`
+  const title = `${athlete.name} — ${athlete.position} | Gayduo Sports Agency`
+  const description = `${athlete.name} is a ${athlete.nationality} ${athlete.position.toLowerCase()} at ${athlete.team}, ${age} years old — ${athlete.stats.goals} goals & ${athlete.stats.assists} assists. Represented by Gayduo Sports Agency.`
 
   return {
     title,
@@ -47,14 +44,12 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
     openGraph: {
       title,
       description,
-      images: [{ url: imageUrl, width: 800, height: 1067, alt: athlete.name }],
       type: "profile",
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [imageUrl],
     },
   }
 }

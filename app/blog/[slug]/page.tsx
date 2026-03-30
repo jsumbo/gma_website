@@ -22,6 +22,10 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     return { title: "Post Not Found | Gayduo Sports Agency" }
   }
 
+  const ogImage = post.featuredImage.startsWith("http")
+    ? post.featuredImage
+    : `https://gayduosa.org${post.featuredImage}`
+
   return {
     title: post.seoTitle,
     description: post.seoDescription,
@@ -29,7 +33,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     openGraph: {
       title: post.seoTitle,
       description: post.seoDescription,
-      images: [post.featuredImage],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
       type: "article",
       publishedTime: post.publishedAt,
       authors: [post.author],
@@ -38,7 +42,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       card: "summary_large_image",
       title: post.seoTitle,
       description: post.seoDescription,
-      images: [post.featuredImage],
+      images: [ogImage],
     },
   }
 }
