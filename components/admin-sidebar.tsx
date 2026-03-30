@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { FileText, Users, Home, LogOut } from "lucide-react"
+import { FileText, Users, Home, LogOut, Mail } from "lucide-react"
 
 export function AdminSidebar() {
   const pathname = usePathname()
@@ -52,6 +52,24 @@ export function AdminSidebar() {
               <Users className="h-4 w-4 shrink-0" />
               Athletes
             </Link>
+          </li>
+        </ul>
+
+        <p className="text-xs font-medium uppercase tracking-widest px-4 mb-3 mt-6" style={{ color: "rgba(255,255,255,0.35)" }}>
+          Tools
+        </p>
+        <ul className="space-y-1">
+          <li>
+            <a
+              href="https://server393.web-hosting.com:2096/webmaillogout.cgi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all"
+              style={{ color: "rgba(255,255,255,0.65)" }}
+            >
+              <Mail className="h-4 w-4 shrink-0" />
+              Mail
+            </a>
           </li>
         </ul>
       </nav>
