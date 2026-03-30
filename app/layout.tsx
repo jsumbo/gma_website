@@ -27,7 +27,7 @@ const dmSans = DM_Sans({
 const SITE_NAME = "Gayduo Sports Agency"
 const SITE_DESCRIPTION =
   "Gayduo Sports Agency provides tailored, long-term career management for elite African football talent. We represent fewer players to do more for each one."
-const SITE_URL = "https://gayduosa.com"
+const SITE_URL = "https://gayduosa.org"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -51,13 +51,11 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: `${SITE_NAME} | African Football Agency`,
     description: SITE_DESCRIPTION,
-    images: [{ url: "/athletes/vasco-jacobs.jpg", width: 800, height: 1067, alt: "Gayduo Sports Agency" }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} | African Football Agency`,
     description: SITE_DESCRIPTION,
-    images: ["/athletes/vasco-jacobs.jpg"],
     creator: "@gayduosa",
   },
   icons: { icon: "/Favicon.svg", shortcut: "/Favicon.svg" },
