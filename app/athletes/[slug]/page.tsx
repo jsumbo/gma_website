@@ -26,6 +26,9 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
   const age = new Date().getFullYear() - new Date(athlete.dateOfBirth).getFullYear()
   const title = `${athlete.name} — ${athlete.position}`
   const description = `${athlete.name} is a ${athlete.nationality} ${athlete.position.toLowerCase()} at ${athlete.team}, ${age} years old. Represented by Gayduo Sports Agency — ${athlete.stats.appearances} appearances, ${athlete.stats.goals} goals, ${athlete.stats.assists} assists.`
+  const imageUrl = athlete.image.startsWith("http")
+    ? athlete.image
+    : `https://gayduosa.org${athlete.image}`
 
   return {
     title,
@@ -44,14 +47,14 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
     openGraph: {
       title,
       description,
-      images: [{ url: athlete.image, width: 800, height: 1067, alt: athlete.name }],
+      images: [{ url: imageUrl, width: 800, height: 1067, alt: athlete.name }],
       type: "profile",
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [athlete.image],
+      images: [imageUrl],
     },
   }
 }
