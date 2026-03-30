@@ -61,6 +61,7 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [savingMsg, setSavingMsg] = useState("")
   const [athleteName, setAthleteName] = useState("")
 
   const [name, setName] = useState("")
@@ -183,31 +184,37 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
       const ts = Date.now()
       const ext = (f: File) => f.name.split(".").pop() ?? "bin"
 
-      const imageUrl = mainImageFile
-        ? await uploadImage(mainImageFile, `athletes/${slug}/profile_${ts}.${ext(mainImageFile)}`)
-        : mainImage || ""
+      let imageUrl = mainImage || ""
+      if (mainImageFile) {
+        setSavingMsg("Uploading profile photo...")
+        imageUrl = await uploadImage(mainImageFile, `athletes/${slug}/profile_${ts}.${ext(mainImageFile)}`)
+      }
 
-      const galleryUrls = await Promise.all(
-        gallery.map((preview, i) => {
-          const file = galleryFiles[i]
-          return file
-            ? uploadImage(file, `athletes/${slug}/gallery_${ts}_${i}.${ext(file)}`)
-            : Promise.resolve(preview)
-        })
-      )
+      const galleryUrls: string[] = []
+      for (let i = 0; i < gallery.length; i++) {
+        const file = galleryFiles[i]
+        if (file) {
+          setSavingMsg(`Uploading gallery file ${i + 1} of ${gallery.length}...`)
+          galleryUrls.push(await uploadImage(file, `athletes/${slug}/gallery_${ts}_${i}.${ext(file)}`))
+        } else {
+          galleryUrls.push(gallery[i])
+        }
+      }
 
-      const savedVideos = await Promise.all(
-        highlightVideos
-          .filter((v) => v.url || v.file)
-          .map(async (v) => {
-            if (v.mode === "upload" && v.file) {
-              const url = await uploadImage(v.file, `athletes/${slug}/highlight_${ts}_${Date.now()}.${ext(v.file)}`)
-              return { url, ...(v.label ? { label: v.label } : {}) }
-            }
-            return { url: toEmbedUrl(v.url), ...(v.label ? { label: v.label } : {}) }
-          })
-      )
+      const videoEntries = highlightVideos.filter((v) => v.url || v.file)
+      const savedVideos = []
+      for (let i = 0; i < videoEntries.length; i++) {
+        const v = videoEntries[i]
+        if (v.mode === "upload" && v.file) {
+          setSavingMsg(`Uploading video${v.label ? ` "${v.label}"` : ` ${i + 1}`}...`)
+          const url = await uploadImage(v.file, `athletes/${slug}/highlight_${ts}_${i}.${ext(v.file)}`)
+          savedVideos.push({ url, ...(v.label ? { label: v.label } : {}) })
+        } else {
+          savedVideos.push({ url: toEmbedUrl(v.url), ...(v.label ? { label: v.label } : {}) })
+        }
+      }
 
+      setSavingMsg("Saving athlete...")
       await updateAthlete(id, {
         name, slug, position, team,
         number: Number(number),
@@ -230,9 +237,10 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
       })
       toast.success("Athlete updated!")
       router.push("/gsa/athletes")
-    } catch {
-      toast.error("Failed to update athlete")
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update athlete")
       setSaving(false)
+      setSavingMsg("")
     }
   }
 
@@ -544,7 +552,13 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
                         className="hidden"
                         onChange={(e) => {
                           const file = e.target.files?.[0]
-                          if (file) updateVideo(i, { file, url: URL.createObjectURL(file) })
+                          if (!file) return
+                          if (file.size / (1024 * 1024) > 50) {
+                            toast.error(`${file.name} is too large. Maximum video size is 50 MB.`)
+                            e.target.value = ""
+                            return
+                          }
+                          updateVideo(i, { file, url: URL.createObjectURL(file) })
                         }}
                       />
                     </label>
@@ -566,7 +580,7 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
                 <Button type="button" variant="outline">Cancel</Button>
               </Link>
               <Button type="submit" disabled={saving}>
-                {saving ? "Saving..." : "Update Athlete"}
+                {saving ? (savingMsg || "Saving...") : "Update Athlete"}
               </Button>
             </div>
           </div>
