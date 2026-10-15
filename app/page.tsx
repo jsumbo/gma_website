@@ -126,10 +126,10 @@ export default async function HomePage() {
                     Services
                   </p>
                   <h2 className="font-display leading-[0.95] text-white">
-                    <span className="block whitespace-nowrap" style={{ fontSize: "clamp(1.8rem, 3.6vw, 3.5rem)" }}>
+                    <span className="block whitespace-normal lg:whitespace-nowrap" style={{ fontSize: "clamp(1.7rem, 8vw, 3.5rem)" }}>
                       DELIVERING FOR
                     </span>
-                    <span className="block whitespace-nowrap" style={{ color: "#fee11b", fontSize: "clamp(1.8rem, 3.6vw, 3.5rem)" }}>
+                    <span className="block whitespace-normal lg:whitespace-nowrap" style={{ color: "#fee11b", fontSize: "clamp(1.7rem, 8vw, 3.5rem)" }}>
                       YOU ON THE PITCH
                     </span>
                   </h2>

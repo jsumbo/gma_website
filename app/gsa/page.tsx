@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { AdminSidebar } from "@/components/admin-sidebar"
+import { AdminShell } from "@/components/admin-shell"
 import { toast } from "sonner"
 
 const ADMIN_USERNAME = process.env.NEXT_PUBLIC_ADMIN_USERNAME ?? ""
@@ -154,9 +154,8 @@ function BlogDashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-muted/20">
-      <AdminSidebar />
-      <main className="flex-1 ml-64 p-8">
+    <AdminShell>
+      <main className="p-4 sm:p-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -190,7 +189,7 @@ function BlogDashboard() {
               </Link>
             </div>
           ) : (
-            <div className="bg-background border border-border rounded-lg overflow-hidden">
+            <div className="overflow-x-auto rounded-lg border border-border bg-background">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
@@ -297,7 +296,7 @@ function BlogDashboard() {
           )}
         </div>
       </main>
-    </div>
+    </AdminShell>
   )
 }
 

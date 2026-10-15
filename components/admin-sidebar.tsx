@@ -2,9 +2,9 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { FileText, Users, Home, LogOut, Mail, Sparkles, UserCircle } from "lucide-react"
+import { FileText, Users, Home, LogOut, Mail, Sparkles, UserCircle, X } from "lucide-react"
 
-export function AdminSidebar() {
+export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -14,12 +14,18 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="w-64 flex flex-col fixed inset-y-0 left-0 z-40" style={{ backgroundColor: "#01255f", color: "#fff" }}>
-      <div className="p-6 border-b border-white/10">
-        <Link href="/gsa" className="block">
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col transition-transform duration-200 lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}
+      style={{ backgroundColor: "#01255f", color: "#fff" }}
+    >
+      <div className="flex items-start justify-between border-b border-white/10 p-6">
+        <Link href="/gsa" className="block" onClick={onClose}>
           <span className="text-lg font-bold tracking-tight" style={{ color: "#fee11b" }}>MANAGEMENT AGENCY</span>
           <span className="block text-xs mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>Admin Panel</span>
         </Link>
+        <button type="button" className="p-1 lg:hidden" aria-label="Close menu" onClick={onClose}>
+          <X className="h-5 w-5" />
+        </button>
       </div>
 
       <nav className="flex-1 p-4">

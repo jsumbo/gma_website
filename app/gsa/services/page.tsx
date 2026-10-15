@@ -78,7 +78,7 @@ function ServicesContent() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -114,7 +114,7 @@ function ServicesContent() {
             </Link>
           </div>
         ) : (
-          <div className="bg-background border border-border rounded-lg overflow-hidden">
+          <div className="overflow-x-auto rounded-lg border border-border bg-background">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-muted/50">

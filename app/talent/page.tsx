@@ -55,66 +55,63 @@ export default async function TalentPage() {
                 {roster.map((person, index) => {
                   const area = person.area ?? "Athlete"
                   const isAthlete = area === "Athlete"
+                  const detail = [person.position, person.team].filter(Boolean).join(" · ")
 
                   const card = (
-                    <article>
-                      {/* Image */}
-                      <div className="relative aspect-[3/4] overflow-hidden bg-neutral-900 mb-5">
-                        <Image
-                          src={person.image}
-                          alt={person.name}
-                          fill
-                          className="object-cover transition-transform duration-700 scale-100 group-hover:scale-105"
-                          priority={index < 3}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-
-                        {isAthlete && (
-                          <>
-                            {/* Yellow top border — only athlete cards link anywhere, so only they get the "clickable" cue */}
-                            <div
-                              className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
-                              style={{ backgroundColor: "#fee11b" }}
-                            />
-
-                            {/* Jersey number */}
-                            <div
-                              className="absolute bottom-4 right-4 font-display leading-none select-none pointer-events-none text-white/10"
-                              style={{ fontSize: "5.5rem" }}
-                            >
-                              {person.number}
-                            </div>
-                          </>
-                        )}
-                      </div>
-
-                      {/* Info */}
-                      <div>
-                        {(isAthlete ? person.position : area) && (
-                          <p className="font-heading font-semibold text-[0.65rem] uppercase tracking-[0.2em] mb-1.5" style={{ color: "#fee11b" }}>
-                            {isAthlete ? person.position : area}
+                    <article className="relative aspect-[3/4] overflow-hidden bg-neutral-900">
+                      <Image
+                        src={person.image}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        priority={index < 3}
+                      />
+                      <span
+                        className="absolute left-3 top-3 px-2 py-1 font-heading text-[0.6rem] font-bold uppercase tracking-[0.14em] sm:left-4 sm:top-4 sm:px-2.5 sm:text-[0.65rem]"
+                        style={{ backgroundColor: "#fee11b", color: "#01255f" }}
+                      >
+                        {area}
+                      </span>
+                      <div
+                        className="absolute inset-x-0 bottom-0 px-3 pb-3 pt-16 sm:px-5 sm:pb-5 sm:pt-28"
+                        style={{ background: "linear-gradient(to top, #01255f 0%, #01255f 34%, rgba(1,37,95,0.55) 62%, rgba(1,37,95,0) 100%)" }}
+                      >
+                        {isAthlete && detail && (
+                          <p className="font-heading text-[0.6rem] font-semibold uppercase leading-snug tracking-[0.12em] text-balance sm:text-[0.65rem] sm:tracking-[0.16em]" style={{ color: "#fee11b" }}>
+                            {detail}
                           </p>
                         )}
-                        <h2 className="font-heading font-bold leading-tight mb-1 transition-colors" style={{ fontSize: "1.4rem", color: "#01255f" }}>
+                        <h2 className="mt-1 font-heading text-xl font-bold leading-tight text-white sm:text-2xl">
                           {person.name}
                         </h2>
-                        {isAthlete && (
-                          <p className="font-heading text-xs uppercase tracking-wider text-muted-foreground">
-                            {person.team}
-                          </p>
-                        )}
+                        <p
+                          className={`mt-3 flex items-center gap-2 font-heading text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white ${isAthlete ? "" : "invisible"}`}
+                          aria-hidden={isAthlete ? undefined : true}
+                        >
+                          <span
+                            className="block h-[2px] w-8 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 group-focus-visible:scale-x-100"
+                            style={{ backgroundColor: "#fee11b" }}
+                          />
+                          <span className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+                            View profile
+                          </span>
+                        </p>
                       </div>
                     </article>
                   )
 
-                  // Only athletes get a profile page — creators and models show their area
-                  // instead of a team and aren't clickable.
+                  // Only athletes get a profile page. Creators and models stay on the roster.
                   return isAthlete ? (
-                    <Link href={`/talent/${person.slug}`} key={person.id} className="group block">
+                    <Link
+                      href={`/talent/${person.slug}`}
+                      key={person.id}
+                      className="group block focus-visible:outline-2 focus-visible:outline-offset-4"
+                      style={{ outlineColor: "#fee11b" }}
+                    >
                       {card}
                     </Link>
                   ) : (
-                    <div key={person.id} className="group block">
+                    <div key={person.id}>
                       {card}
                     </div>
                   )
