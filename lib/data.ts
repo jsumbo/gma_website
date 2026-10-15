@@ -72,7 +72,7 @@ export const athletes: Athlete[] = [
     height: "1.85m",
     preferredFoot: "Right",
     biography:
-      "Vasco Jacobs is one of the most compelling attacking talents to emerge from West Africa in recent years. Born in Monrovia, Liberia, he developed his craft at Mighty Barrolle FC — one of the country's most storied clubs — before European scouts took notice and his career crossed continents.\n\nAt Thunder FC, Vasco has quickly become a player that opposition defences build game plans around. His combination of explosive pace off the mark, intelligent movement into channels, and composed finishing under pressure makes him a threat from multiple angles. He can finish from distance or wait for a yard of space — both outcomes tend to end the same way.\n\nOff the pitch, Vasco carries his roots with him. He returns to Monrovia each off-season to run football development camps for young players, investing in the community that shaped him. For Gayduo Sports Agency, he represents exactly what we look for: elite ability paired with genuine character.",
+      "Vasco Jacobs is one of the most compelling attacking talents to emerge from West Africa in recent years. Born in Monrovia, Liberia, he developed his craft at Mighty Barrolle FC — one of the country's most storied clubs — before European scouts took notice and his career crossed continents.\n\nAt Thunder FC, Vasco has quickly become a player that opposition defences build game plans around. His combination of explosive pace off the mark, intelligent movement into channels, and composed finishing under pressure makes him a threat from multiple angles. He can finish from distance or wait for a yard of space — both outcomes tend to end the same way.\n\nOff the pitch, Vasco carries his roots with him. He returns to Monrovia each off-season to run football development camps for young players, investing in the community that shaped him. For Gayduo Management Agency, he represents exactly what we look for: elite ability paired with genuine character.",
     achievements: [
       { year: "2025–26", title: "League Top Scorer — 18 goals" },
       { year: "2025–26", title: "National County Sports Meet Runner-up" },
@@ -181,9 +181,9 @@ export const blogPosts: BlogPost[] = [
       "<p>Thunder FC today confirmed that Vasco Jacobs has signed a new multi-year contract extension, keeping him at the club through 2029. The announcement puts to rest months of speculation linking the Liberian forward with several of Europe's top clubs.</p><p>The 24-year-old has been in career-defining form this season, scoring 18 goals across all competitions while adding six assists. His ability to perform consistently at the highest level — combined with his professionalism and character — made extending his contract a clear priority for the club's leadership.</p><p>We are proud to have supported Vasco through this negotiation and look forward to watching him reach new heights in the seasons ahead.</p>",
     featuredImage: "/blog/contract-signing.jpg",
     category: "Transfers",
-    author: "Gayduo Sports Agency",
+    author: "Gayduo Management Agency",
     publishedAt: "2026-03-15",
-    seoTitle: "Vasco Jacobs Signs Contract Extension | Gayduo Sports Agency",
+    seoTitle: "Vasco Jacobs Signs Contract Extension",
     seoDescription:
       "Star forward Vasco Jacobs signs a new multi-year contract extension with Thunder FC through 2029.",
     seoKeywords: ["Vasco Jacobs", "contract extension", "Thunder FC", "transfer news"],
@@ -198,9 +198,9 @@ export const blogPosts: BlogPost[] = [
       "<p>Alvin Martor has been rewarded for an exceptional run of form with his first call-up to the senior national team squad for the upcoming World Cup qualifying campaign. The announcement was widely celebrated, with supporters and pundits alike having made the case for his inclusion for some time.</p><p>The 22-year-old has been Professional Sports Academy's standout performer in midfield, registering 6 goals and 12 assists this season while consistently driving the tempo of his side's best performances. His ability to combine technical quality with intelligent positioning has marked him out as one of the most complete midfielders in the division.</p><p>This call-up is a significant milestone — and one that represents the beginning, not the ceiling, of his international career.</p>",
     featuredImage: "/blog/national-team.jpg",
     category: "News",
-    author: "Gayduo Sports Agency",
+    author: "Gayduo Management Agency",
     publishedAt: "2026-03-10",
-    seoTitle: "Alvin Martor National Team Call-Up | Gayduo Sports Agency",
+    seoTitle: "Alvin Martor National Team Call-Up",
     seoDescription:
       "Alvin Martor receives his first senior international call-up for the upcoming World Cup qualifiers.",
     seoKeywords: ["Alvin Martor", "national team", "Rwanda football", "World Cup qualifiers"],
@@ -215,12 +215,12 @@ export const blogPosts: BlogPost[] = [
       "<p>Most fans see match day. Pre-season is invisible to them — and that is exactly where the real work happens.</p><p>For our players, preparation begins weeks before the squad reports back to training. Personalised fitness programmes, video analysis sessions, nutrition planning, and recovery protocols are all in place before the first whistle of the new campaign. The goal is simple: arrive ready, not just fit.</p><p>This level of preparation doesn't happen by accident. It is the result of a support structure that treats every player as an individual — with specific physical profiles, specific tactical responsibilities, and specific career objectives. That is what we mean when we talk about 360-degree management. It shows on the pitch.</p>",
     featuredImage: "/blog/training-session.jpg",
     category: "Features",
-    author: "Gayduo Sports Agency",
+    author: "Gayduo Management Agency",
     publishedAt: "2026-03-05",
-    seoTitle: "Inside Elite Pre-Season Training | Gayduo Sports Agency",
+    seoTitle: "Inside Elite Pre-Season Training",
     seoDescription:
-      "An inside look at how Gayduo Sports Agency athletes prepare for the season — from fitness to tactics to recovery.",
-    seoKeywords: ["pre-season training", "football preparation", "elite athletes", "Gayduo Sports Agency"],
+      "An inside look at how Gayduo Management Agency athletes prepare for the season — from fitness to tactics to recovery.",
+    seoKeywords: ["pre-season training", "football preparation", "elite athletes", "Gayduo Management Agency"],
   },
 ]
 

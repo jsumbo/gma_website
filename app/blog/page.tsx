@@ -10,11 +10,15 @@ export const dynamic = "force-dynamic"
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "News, transfers, features, and stories from Gayduo Sports Agency. Follow our athletes and stay close to the game.",
+    "News, transfers, features, and stories from Gayduo Management Agency. Follow our athletes and stay close to the game.",
+  alternates: { canonical: "/blog" },
   openGraph: {
-    title: "News & Insights | Gayduo Sports Agency",
-    description: "News, transfers, features, and stories from Gayduo Sports Agency.",
+    title: "News & Insights | Gayduo Management Agency",
+    description: "News, transfers, features, and stories from Gayduo Management Agency.",
+    url: "/blog",
+    images: ["/opengraph-image"],
   },
+  twitter: { card: "summary_large_image", images: ["/opengraph-image"] },
 }
 
 export default async function BlogPage() {
@@ -29,12 +33,6 @@ export default async function BlogPage() {
         
         <section className="pt-32 pb-16 px-7 sm:px-12 lg:px-16 xl:px-24 gsa-grain" style={{ backgroundColor: "#01255f" }}>
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-6 h-px" style={{ backgroundColor: "#fee11b" }} />
-              <p className="font-heading font-semibold text-xs uppercase tracking-[0.25em]" style={{ color: "rgba(255,255,255,0.4)" }}>
-                News &amp; Insights
-              </p>
-            </div>
             <h1 className="font-display leading-[0.88] text-white" style={{ fontSize: "clamp(5rem, 18vw, 16rem)" }}>
               BLOG
             </h1>

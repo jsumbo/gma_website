@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Admin Panel | Sports Agency",
-  description: "Sports Agency admin panel for managing blog posts and content.",
+  title: "Admin Panel | Management Agency",
+  description: "Management Agency admin panel for managing blog posts and content.",
   robots: "noindex, nofollow",
 }
 

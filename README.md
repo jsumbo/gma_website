@@ -1,3 +1,3 @@
-# Gayduo Sports Agency — Website
+# Gayduo Management Agency — Website
 
-Official website for **Gayduo Sports Agency (GSA)**, representing elite African footballers. 
+Official website for **Gayduo Management Agency (GMA)**
