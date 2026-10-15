@@ -93,7 +93,7 @@ const organizationJsonLd = {
   url: SITE_URL,
   logo: `${SITE_URL}/Web_Logo.svg`,
   description: SITE_DESCRIPTION,
-  email: "hello@gayduosa.com",
+  email: "info@gayduoma.com",
   sameAs: [
     "https://www.instagram.com/gayduosa/",
     "https://www.facebook.com/people/Gayduo-Sports-Agency/61581585638795/",

@@ -10,21 +10,21 @@ import { ArrowRight } from "lucide-react"
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
-  title: "Athletes",
+  title: "Talent",
   description:
-    "Meet the Gayduo Management Agency roster — a select group of elite African footballers, each receiving the full attention and support they deserve.",
-  alternates: { canonical: "/athletes" },
+    "Meet the Gayduo Management Agency roster — athletes, creators, and models, each receiving the full attention and support they deserve.",
+  alternates: { canonical: "/talent" },
   openGraph: {
-    title: "Our Athletes | Gayduo Management Agency",
-    description: "A select group of elite African footballers — each with a story, each with a future.",
-    url: "/athletes",
+    title: "Our Talent | Gayduo Management Agency",
+    description: "A select roster of athletes, creators, and models — each with a story, each with a future.",
+    url: "/talent",
     images: ["/opengraph-image"],
   },
   twitter: { card: "summary_large_image", images: ["/opengraph-image"] },
 }
 
-export default async function AthletesPage() {
-  const athletes = await getAthletes().catch(() => staticAthletes)
+export default async function TalentPage() {
+  const roster = await getAthletes().catch(() => staticAthletes)
 
   return (
     <div className="min-h-screen flex flex-col bg-[#fafaf9]">
@@ -32,78 +32,96 @@ export default async function AthletesPage() {
 
       <main className="flex-1">
 
-        
         <section className="pt-32 pb-16 px-7 sm:px-12 lg:px-16 xl:px-24 gsa-grain" style={{ backgroundColor: "#01255f" }}>
           <div className="max-w-7xl mx-auto">
             <h1 className="font-display leading-[0.88] text-white" style={{ fontSize: "clamp(4rem, 14vw, 13rem)" }}>
               OUR<br />
-              ATHLETES
+              TALENT
             </h1>
             <p className="mt-8 text-base sm:text-lg leading-relaxed max-w-xl" style={{ color: "rgba(255,255,255,0.5)" }}>
-              We don&apos;t sign players to fill a roster — we sign players we believe in. Each athlete receives our full attention, from first contract to final whistle.
+              We don&apos;t sign people to fill a roster — we sign talent we believe in. Each person receives our full attention, from first contract onward.
             </p>
           </div>
         </section>
 
-        
         <section className="py-16 lg:py-24 px-7 sm:px-12 lg:px-16 xl:px-24">
           <div className="max-w-7xl mx-auto">
-            {athletes.length === 0 ? (
+            {roster.length === 0 ? (
               <div className="text-center py-24 text-muted-foreground">
-                <p className="font-heading font-semibold uppercase tracking-wider">No athletes on the roster yet.</p>
+                <p className="font-heading font-semibold uppercase tracking-wider">No talent on the roster yet.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {athletes.map((athlete, index) => (
-                  <Link href={`/athletes/${athlete.slug}`} key={athlete.id} className="group block">
+                {roster.map((person, index) => {
+                  const area = person.area ?? "Athlete"
+                  const isAthlete = area === "Athlete"
+
+                  const card = (
                     <article>
                       {/* Image */}
                       <div className="relative aspect-[3/4] overflow-hidden bg-neutral-900 mb-5">
                         <Image
-                          src={athlete.image}
-                          alt={athlete.name}
+                          src={person.image}
+                          alt={person.name}
                           fill
                           className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105"
                           priority={index < 3}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
 
-                        {/* Yellow top border */}
-                        <div
-                          className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
-                          style={{ backgroundColor: "#fee11b" }}
-                        />
+                        {isAthlete && (
+                          <>
+                            {/* Yellow top border — only athlete cards link anywhere, so only they get the "clickable" cue */}
+                            <div
+                              className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
+                              style={{ backgroundColor: "#fee11b" }}
+                            />
 
-                        {/* Jersey number */}
-                        <div
-                          className="absolute bottom-4 right-4 font-display leading-none select-none pointer-events-none text-white/10"
-                          style={{ fontSize: "5.5rem" }}
-                        >
-                          {athlete.number}
-                        </div>
+                            {/* Jersey number */}
+                            <div
+                              className="absolute bottom-4 right-4 font-display leading-none select-none pointer-events-none text-white/10"
+                              style={{ fontSize: "5.5rem" }}
+                            >
+                              {person.number}
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       {/* Info */}
                       <div>
-                        <p className="font-heading font-semibold text-[0.65rem] uppercase tracking-[0.2em] mb-1.5" style={{ color: "#fee11b" }}>
-                          {athlete.position}
-                        </p>
+                        {isAthlete && person.position && (
+                          <p className="font-heading font-semibold text-[0.65rem] uppercase tracking-[0.2em] mb-1.5" style={{ color: "#fee11b" }}>
+                            {person.position}
+                          </p>
+                        )}
                         <h2 className="font-heading font-bold leading-tight mb-1 transition-colors" style={{ fontSize: "1.4rem", color: "#01255f" }}>
-                          {athlete.name}
+                          {person.name}
                         </h2>
                         <p className="font-heading text-xs uppercase tracking-wider text-muted-foreground">
-                          {athlete.team}
+                          {isAthlete ? person.team : area}
                         </p>
                       </div>
                     </article>
-                  </Link>
-                ))}
+                  )
+
+                  // Only athletes get a profile page — creators and models show their area
+                  // instead of a team and aren't clickable.
+                  return isAthlete ? (
+                    <Link href={`/talent/${person.slug}`} key={person.id} className="group block">
+                      {card}
+                    </Link>
+                  ) : (
+                    <div key={person.id} className="group block">
+                      {card}
+                    </div>
+                  )
+                })}
               </div>
             )}
           </div>
         </section>
 
-        
         <section className="py-20 px-7 sm:px-12 lg:px-16 xl:px-24 gsa-grain border-t border-white/5" style={{ backgroundColor: "#01255f" }}>
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div>

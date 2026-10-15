@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
     () => staticAthletes.find((a) => a.slug === slug) ?? null
   )
 
-  if (!athlete) return { title: "Athlete Not Found" }
+  if (!athlete || (athlete.area && athlete.area !== "Athlete")) return { title: "Not Found" }
 
   const age = getAge(athlete.dateOfBirth)
   // No manual "| Gayduo Management Agency" suffix — the root layout's title template
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
   return {
     title,
     description,
-    alternates: { canonical: `/athletes/${athlete.slug}` },
+    alternates: { canonical: `/talent/${athlete.slug}` },
     keywords: [
       athlete.name,
       `${athlete.name} football`,
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
       title,
       description,
       type: "profile",
-      url: `/athletes/${athlete.slug}`,
+      url: `/talent/${athlete.slug}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -74,7 +74,9 @@ export default async function AthletePage({ params }: AthletePageProps) {
     () => staticAthletes.find((a) => a.slug === slug) ?? null
   )
 
-  if (!athlete) notFound()
+  // Only athletes get a profile page — creators and models are listed on /talent but don't
+  // have one (per their roster card, which isn't a link in the first place).
+  if (!athlete || (athlete.area && athlete.area !== "Athlete")) notFound()
 
   const age = getAge(athlete.dateOfBirth)
 
@@ -97,7 +99,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
       name: "Gayduo Management Agency",
       url: "https://gayduosa.org",
     },
-    url: `https://gayduosa.org/athletes/${athlete.slug}`,
+    url: `https://gayduosa.org/talent/${athlete.slug}`,
     sameAs: [
       athlete.socialLinks.instagram,
       athlete.socialLinks.twitter,
@@ -120,11 +122,11 @@ export default async function AthletePage({ params }: AthletePageProps) {
         <div className="px-7 sm:px-12 lg:px-16 xl:px-24 py-6">
           <div className="mx-auto max-w-7xl">
             <Link
-              href="/athletes"
+              href="/talent"
               className="inline-flex items-center gap-2 font-heading font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              Back to Athletes
+              Back to Talent
             </Link>
           </div>
         </div>

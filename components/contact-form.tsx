@@ -123,8 +123,8 @@ export function ContactForm({ defaultSubject = "" }: { defaultSubject?: string }
         {status === "error" && (
           <p className="border-l-2 border-red-500 bg-red-50 px-4 py-3 text-sm text-red-700">
             {error}{" "}
-            <a href="mailto:hello@gayduosa.com" className="font-semibold underline underline-offset-2">
-              hello@gayduosa.com
+            <a href="mailto:info@gayduoma.com" className="font-semibold underline underline-offset-2">
+              info@gayduoma.com
             </a>
           </p>
         )}
