@@ -3,16 +3,21 @@ import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BlogCard } from "@/components/blog-card"
-import { getFeaturedBlogPosts } from "@/lib/firestore"
+import { getFeaturedBlogPosts, getServices } from "@/lib/firestore"
 import { blogPosts as staticBlogPosts } from "@/lib/data"
 import { ArrowRight, ArrowDown } from "lucide-react"
 import { ServicesGrid } from "@/components/services-grid"
-import { services } from "@/lib/services"
+import { services as staticServices } from "@/lib/services"
 
 export const dynamic = "force-dynamic"
 
 export default async function HomePage() {
-  const featuredPosts = await getFeaturedBlogPosts().catch(() => staticBlogPosts.slice(0, 3))
+  const [featuredPosts, fetchedServices] = await Promise.all([
+    getFeaturedBlogPosts().catch(() => staticBlogPosts.slice(0, 3)),
+    getServices().catch(() => staticServices),
+  ])
+  // An empty collection isn't an error, so .catch() alone won't fall back — cover that too.
+  const services = fetchedServices.length > 0 ? fetchedServices : staticServices
 
   return (
     <div className="min-h-screen flex flex-col bg-[#fafaf9]">
@@ -81,7 +86,7 @@ export default async function HomePage() {
 
           {/* "View Roster" pill, bottom-right */}
           <Link
-            href="/athletes"
+            href="/talent"
             className="group absolute bottom-7 right-7 z-10 inline-flex items-center gap-2.5 px-6 py-3.5 font-heading text-xs font-bold uppercase tracking-[0.14em] transition-all duration-200 hover:gap-4 hover:bg-white sm:bottom-10 sm:right-12 lg:right-16 xl:right-24"
             style={{ backgroundColor: "#fee11b", color: "#01255f" }}
           >

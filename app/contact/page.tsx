@@ -50,14 +50,14 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                 REACH OUT
               </h2>
               <p className="text-base leading-relaxed text-muted-foreground max-w-sm">
-                Whether you&apos;re talent looking for representation, a club seeking a partner, or a brand interested in working with the people we manage — we&apos;d love to hear from you.
+                Whether you’re a talent looking for representation or a brand seeking partnership opportunities, our dedicated team is here to help and will reply to any enquiries as quick as we can.
               </p>
 
               <div className="mt-10 space-y-8">
                 <div>
                   <p className="mb-1 font-heading text-xs font-semibold uppercase tracking-widest text-muted-foreground">Email</p>
-                  <a href="mailto:hello@gayduosa.com" className="font-heading text-lg font-bold transition-opacity hover:opacity-70" style={{ color: "#01255f" }}>
-                    hello@gayduosa.com
+                  <a href="mailto:info@gayduoma.com" className="font-heading text-lg font-bold transition-opacity hover:opacity-70" style={{ color: "#01255f" }}>
+                    info@gayduoma.com
                   </a>
                 </div>
                 <div>

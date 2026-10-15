@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { FileText, Users, Home, LogOut, Mail } from "lucide-react"
+import { FileText, Users, Home, LogOut, Mail, Sparkles, UserCircle } from "lucide-react"
 
 export function AdminSidebar() {
   const pathname = usePathname()
@@ -42,15 +42,41 @@ export function AdminSidebar() {
           </li>
           <li>
             <Link
-              href="/gsa/athletes"
+              href="/gsa/talent"
               className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all"
-              style={pathname.startsWith("/gsa/athletes")
+              style={pathname.startsWith("/gsa/talent")
                 ? { backgroundColor: "#fee11b", color: "#01255f" }
                 : { color: "rgba(255,255,255,0.65)" }
               }
             >
               <Users className="h-4 w-4 shrink-0" />
-              Athletes
+              Talent
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/gsa/services"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all"
+              style={pathname.startsWith("/gsa/services")
+                ? { backgroundColor: "#fee11b", color: "#01255f" }
+                : { color: "rgba(255,255,255,0.65)" }
+              }
+            >
+              <Sparkles className="h-4 w-4 shrink-0" />
+              Services
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/gsa/team"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all"
+              style={pathname.startsWith("/gsa/team")
+                ? { backgroundColor: "#fee11b", color: "#01255f" }
+                : { color: "rgba(255,255,255,0.65)" }
+              }
+            >
+              <UserCircle className="h-4 w-4 shrink-0" />
+              Team
             </Link>
           </li>
         </ul>

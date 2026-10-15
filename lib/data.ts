@@ -3,10 +3,15 @@ export interface HighlightVideo {
   label?: string
 }
 
+/** What kind of talent this is. Missing/undefined (older records) is treated as "Athlete". */
+export type TalentArea = "Athlete" | "Creator" | "Model"
+
 export interface Athlete {
   id: string
   name: string
   slug: string
+  /** Athlete, Creator, or Model — controls what the roster card shows and whether it links to a profile page. */
+  area?: TalentArea
   position: string
   team: string
   image: string
@@ -42,6 +47,27 @@ export interface AthleteStats {
   cleanSheets?: number
 }
 
+export interface Service {
+  id: string
+  /** Two-line card title, e.g. ["TRANSFER", "GUIDANCE"] */
+  title: [string, string]
+  description: string
+  /** Key into lib/service-icons.ts's SERVICE_ICONS map */
+  icon: string
+  /** Lower sorts first */
+  order: number
+}
+
+export interface TeamMember {
+  id: string
+  name: string
+  role: string
+  /** Optional uploaded photo URL. Falls back to a generated DiceBear avatar when unset. */
+  photo?: string
+  /** Lower sorts first */
+  order: number
+}
+
 export interface BlogPost {
   id: string
   title: string
@@ -63,6 +89,7 @@ export const athletes: Athlete[] = [
     id: "1",
     name: "Vasco Jacobs",
     slug: "vasco-jacobs",
+    area: "Athlete",
     position: "Forward",
     team: "Thunder FC",
     image: "/athletes/vasco-jacobs.jpg",
@@ -99,6 +126,7 @@ export const athletes: Athlete[] = [
     id: "2",
     name: "Alvin Martor",
     slug: "alvin-martor",
+    area: "Athlete",
     position: "Central Midfielder",
     team: "Professional Sports Academy",
     image: "/athletes/alvin-martor.jpg",
@@ -136,6 +164,7 @@ export const athletes: Athlete[] = [
     id: "3",
     name: "Daniel Parker",
     slug: "daniel-parker",
+    area: "Athlete",
     position: "Defensive Midfielder",
     team: "Jovial Kids Academy",
     image: "/athletes/daniel-parker.jpg",

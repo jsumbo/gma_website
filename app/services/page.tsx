@@ -2,9 +2,12 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ServicesGrid } from "@/components/services-grid"
-import { services } from "@/lib/services"
+import { getServices } from "@/lib/firestore"
+import { services as staticServices } from "@/lib/services"
 import { ArrowRight } from "lucide-react"
 import type { Metadata } from "next"
+
+export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
   title: "Services",
@@ -20,7 +23,11 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", images: ["/opengraph-image"] },
 }
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const fetched = await getServices().catch(() => staticServices)
+  // An empty collection isn't an error, so .catch() alone won't fall back — cover that too.
+  const services = fetched.length > 0 ? fetched : staticServices
+
   return (
     <div className="min-h-screen flex flex-col bg-[#fafaf9]">
       <Header />
