@@ -71,30 +71,24 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Giant wordmark — full name, so each line gets its own (much more conservative) size:
-          "MANAGEMENT AGENCY" is 3x longer than "GAYDUO" and would overflow at the same scale. */}
-      <div className="px-7 sm:px-12 lg:px-16 xl:px-24">
-        <div className="mx-auto max-w-7xl border-t py-6" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-          <Link href="/" className="block text-center">
-            <span
-              className="block whitespace-nowrap font-display leading-[0.95]"
-              style={{ fontSize: "clamp(2.6rem, 10vw, 9rem)", color: "#fee11b" }}
-            >
-              GAYDUO
-            </span>
-            <span
-              className="block whitespace-nowrap font-display leading-[0.95]"
-              style={{ fontSize: "clamp(1.1rem, 4.4vw, 4rem)", color: "rgba(255,255,255,0.9)" }}
-            >
-              MANAGEMENT AGENCY
-            </span>
-          </Link>
-        </div>
+      {/* Full-bleed wordmark. One line, sized to the viewport so the name
+          runs edge to edge the way a poster lockup does. */}
+      <div className="@container w-full border-t" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+        <Link
+          href="/"
+          aria-label="Gayduo Management Agency"
+          className="block whitespace-nowrap text-center font-display leading-none"
+          style={{ fontSize: "10.42cqi", letterSpacing: "-0.02em", padding: "0.16em 0 0.14em" }}
+        >
+          <span style={{ color: "#fee11b" }}>GAYDUO</span>
+          {" "}
+          <span className="text-white">MANAGEMENT AGENCY</span>
+        </Link>
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t px-7 sm:px-12 lg:px-16 xl:px-24" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 py-6 text-center sm:flex-row sm:justify-between sm:text-left">
+      <div className="px-7 sm:px-12 lg:px-16 xl:px-24">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 pb-6 pt-3 text-center sm:flex-row sm:justify-between sm:text-left">
           <p className="font-heading text-[0.65rem] font-medium uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
             &copy; {new Date().getFullYear()} — Gayduo Management Agency
           </p>

@@ -86,43 +86,6 @@ export interface BlogPost {
 
 export const athletes: Athlete[] = [
   {
-    id: "1",
-    name: "Vasco Jacobs",
-    slug: "vasco-jacobs",
-    area: "Athlete",
-    position: "Forward",
-    team: "Thunder FC",
-    image: "/athletes/vasco-jacobs.jpg",
-    number: 9,
-    nationality: "Liberian",
-    dateOfBirth: "2002-04-15",
-    height: "1.85m",
-    preferredFoot: "Right",
-    biography:
-      "Vasco Jacobs is one of the most compelling attacking talents to emerge from West Africa in recent years. Born in Monrovia, Liberia, he developed his craft at Mighty Barrolle FC — one of the country's most storied clubs — before European scouts took notice and his career crossed continents.\n\nAt Thunder FC, Vasco has quickly become a player that opposition defences build game plans around. His combination of explosive pace off the mark, intelligent movement into channels, and composed finishing under pressure makes him a threat from multiple angles. He can finish from distance or wait for a yard of space — both outcomes tend to end the same way.\n\nOff the pitch, Vasco carries his roots with him. He returns to Monrovia each off-season to run football development camps for young players, investing in the community that shaped him. For Gayduo Management Agency, he represents exactly what we look for: elite ability paired with genuine character.",
-    achievements: [
-      { year: "2025–26", title: "League Top Scorer — 18 goals" },
-      { year: "2025–26", title: "National County Sports Meet Runner-up" },
-      { year: "2024", title: "African Youth Championship — Golden Boot" },
-      { year: "2023", title: "Liberian Footballer of the Year" },
-    ],
-    gallery: [
-      "/athletes/vasco-jacobs.jpg",
-      "/athletes/gallery/vasco-action-1.jpg",
-      "/athletes/gallery/vasco-action-2.jpg",
-    ],
-    socialLinks: {
-      instagram: "https://www.instagram.com/v.danabaro/",
-      facebook: "https://www.facebook.com/VJacobs14",
-    },
-    highlightVideo: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    stats: {
-      appearances: 89,
-      goals: 42,
-      assists: 18,
-    },
-  },
-  {
     id: "2",
     name: "Alvin Martor",
     slug: "alvin-martor",
@@ -200,23 +163,6 @@ export const athletes: Athlete[] = [
 ]
 
 export const blogPosts: BlogPost[] = [
-  {
-    id: "1",
-    title: "Vasco Jacobs Signs New Multi-Year Contract Extension",
-    slug: "vasco-jacobs-contract-extension",
-    excerpt:
-      "Star forward Vasco Jacobs has committed his future to Thunder FC, signing a new multi-year deal that keeps him at the club through 2029.",
-    content:
-      "<p>Thunder FC today confirmed that Vasco Jacobs has signed a new multi-year contract extension, keeping him at the club through 2029. The announcement puts to rest months of speculation linking the Liberian forward with several of Europe's top clubs.</p><p>The 24-year-old has been in career-defining form this season, scoring 18 goals across all competitions while adding six assists. His ability to perform consistently at the highest level — combined with his professionalism and character — made extending his contract a clear priority for the club's leadership.</p><p>We are proud to have supported Vasco through this negotiation and look forward to watching him reach new heights in the seasons ahead.</p>",
-    featuredImage: "/blog/contract-signing.jpg",
-    category: "Transfers",
-    author: "Gayduo Management Agency",
-    publishedAt: "2026-03-15",
-    seoTitle: "Vasco Jacobs Signs Contract Extension",
-    seoDescription:
-      "Star forward Vasco Jacobs signs a new multi-year contract extension with Thunder FC through 2029.",
-    seoKeywords: ["Vasco Jacobs", "contract extension", "Thunder FC", "transfer news"],
-  },
   {
     id: "2",
     title: "Alvin Martor Earns First Senior National Team Call-Up",
