@@ -17,7 +17,7 @@ export function AdminSidebar() {
     <aside className="w-64 flex flex-col fixed inset-y-0 left-0 z-40" style={{ backgroundColor: "#01255f", color: "#fff" }}>
       <div className="p-6 border-b border-white/10">
         <Link href="/gsa" className="block">
-          <span className="text-lg font-bold tracking-tight" style={{ color: "#fee11b" }}>SPORTS AGENCY</span>
+          <span className="text-lg font-bold tracking-tight" style={{ color: "#fee11b" }}>MANAGEMENT AGENCY</span>
           <span className="block text-xs mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>Admin Panel</span>
         </Link>
       </div>

@@ -45,7 +45,9 @@ function NewPostContent() {
       .replace(/(^-|-$)/g, "")
     setSlug(generatedSlug)
     if (!seoTitle) {
-      setSeoTitle(`${value} | Gayduo Sports Agency`)
+      // The site automatically appends "| Gayduo Management Agency" to every page title
+      // (see app/layout.tsx's title template) — don't bake it in here too, or it shows twice.
+      setSeoTitle(value)
     }
   }
 
@@ -77,9 +79,9 @@ function NewPostContent() {
         category,
         featuredImage: imageUrl,
         featured,
-        author: "Gayduo Sports Agency",
+        author: "Gayduo Management Agency",
         publishedAt: new Date().toISOString().split("T")[0],
-        seoTitle: seoTitle || `${title} | Gayduo Sports Agency`,
+        seoTitle: seoTitle || title,
         seoDescription,
         seoKeywords: seoKeywords.split(",").map((k) => k.trim()).filter(Boolean),
       })
@@ -130,7 +132,11 @@ function NewPostContent() {
                     </span>
                     <input
                       type="text" id="slug" value={slug}
-                      onChange={(e) => setSlug(e.target.value)}
+                      // Normalize to lowercase/hyphens as they type, but don't trim a trailing
+                      // hyphen until blur — doing it on every keystroke would collapse "hello "
+                      // back to "hello" before the next word is typed, merging words together.
+                      onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "-"))}
+                      onBlur={(e) => setSlug(e.target.value.replace(/-{2,}/g, "-").replace(/(^-|-$)/g, ""))}
                       className="flex-1 px-4 py-3 border border-border rounded-r-lg focus:border-foreground focus:outline-none transition-colors"
                       placeholder="post-url-slug"
                     />
@@ -283,7 +289,7 @@ function NewPostContent() {
               <div className="p-4 bg-muted/50 rounded-lg">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Search Preview</p>
                 <div className="space-y-1">
-                  <p className="text-blue-600 text-lg truncate">{seoTitle || title || "Post Title | Gayduo Sports Agency"}</p>
+                  <p className="text-blue-600 text-lg truncate">{(seoTitle || title || "Post Title") + " | Gayduo Management Agency"}</p>
                   <p className="text-green-700 text-sm truncate">gayduosa.com/blog/{slug || "post-url"}</p>
                   <p className="text-sm text-muted-foreground line-clamp-2">
                     {seoDescription || excerpt || "Your meta description will appear here."}

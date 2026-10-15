@@ -75,7 +75,7 @@ export default function Image() {
               marginTop: 20,
             }}
           >
-            Gayduo Sports Agency
+            Gayduo Management Agency
           </div>
 
           {/* Divider */}
@@ -98,7 +98,7 @@ export default function Image() {
               maxWidth: 620,
             }}
           >
-            Elite career management for African football talent. Fewer players, more impact.
+            Connecting talent with brands. Creating opportunities through strategic partnerships.
           </div>
 
           {/* URL */}

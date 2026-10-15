@@ -11,6 +11,16 @@ import type { Metadata } from "next"
 
 export const dynamic = "force-dynamic"
 
+// Accounts for whether this year's birthday has happened yet — a plain year subtraction
+// overstates age by one for anyone whose birthday hasn't occurred yet this year.
+function getAge(dateOfBirth: string) {
+  const dob = new Date(dateOfBirth)
+  const now = new Date()
+  let age = now.getFullYear() - dob.getFullYear()
+  if (now < new Date(now.getFullYear(), dob.getMonth(), dob.getDate())) age--
+  return age
+}
+
 interface AthletePageProps {
   params: Promise<{ slug: string }>
 }
@@ -23,13 +33,16 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
 
   if (!athlete) return { title: "Athlete Not Found" }
 
-  const age = new Date().getFullYear() - new Date(athlete.dateOfBirth).getFullYear()
-  const title = `${athlete.name} — ${athlete.position} | Gayduo Sports Agency`
-  const description = `${athlete.name} is a ${athlete.nationality} ${athlete.position.toLowerCase()} at ${athlete.team}, ${age} years old — ${athlete.stats.goals} goals & ${athlete.stats.assists} assists. Represented by Gayduo Sports Agency.`
+  const age = getAge(athlete.dateOfBirth)
+  // No manual "| Gayduo Management Agency" suffix — the root layout's title template
+  // (app/layout.tsx) already appends it; adding it here would show the brand name twice.
+  const title = `${athlete.name} — ${athlete.position}`
+  const description = `${athlete.name} is a ${athlete.nationality} ${athlete.position.toLowerCase()} at ${athlete.team}, ${age} years old — ${athlete.stats.goals} goals & ${athlete.stats.assists} assists. Represented by Gayduo Management Agency.`
 
   return {
     title,
     description,
+    alternates: { canonical: `/athletes/${athlete.slug}` },
     keywords: [
       athlete.name,
       `${athlete.name} football`,
@@ -38,13 +51,14 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
       `${athlete.name} ${athlete.team}`,
       athlete.nationality,
       `${athlete.nationality} footballer`,
-      "Gayduo Sports Agency",
+      "Gayduo Management Agency",
       "African football",
     ],
     openGraph: {
       title,
       description,
       type: "profile",
+      url: `/athletes/${athlete.slug}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -62,7 +76,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
 
   if (!athlete) notFound()
 
-  const age = new Date().getFullYear() - new Date(athlete.dateOfBirth).getFullYear()
+  const age = getAge(athlete.dateOfBirth)
 
   // JSON-LD structured data for Google
   const jsonLd = {
@@ -80,7 +94,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
     },
     affiliation: {
       "@type": "Organization",
-      name: "Gayduo Sports Agency",
+      name: "Gayduo Management Agency",
       url: "https://gayduosa.org",
     },
     url: `https://gayduosa.org/athletes/${athlete.slug}`,
@@ -316,7 +330,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
                 </p>
               </div>
               <a
-                href="/about#contact"
+                href="/contact"
                 className="inline-flex items-center justify-center px-7 py-3.5 font-heading font-bold text-sm uppercase tracking-[0.1em] shrink-0 transition-opacity hover:opacity-90"
                 style={{ backgroundColor: "#fee11b", color: "#01255f" }}
               >
