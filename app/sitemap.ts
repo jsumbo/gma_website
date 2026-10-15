@@ -23,10 +23,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getBlogPosts().catch(() => staticBlogPosts),
   ])
 
+  // Only athletes get a /talent/[slug] profile page — creators and models have none, so
+  // including their slugs here would submit dead-end URLs to Google.
   const athleteRoutes: MetadataRoute.Sitemap = athletes
-    .filter((a) => isCleanSlug(a.slug))
+    .filter((a) => isCleanSlug(a.slug) && (a.area ?? "Athlete") === "Athlete")
     .map((a) => ({
-      url: `${BASE}/athletes/${a.slug}`,
+      url: `${BASE}/talent/${a.slug}`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
@@ -47,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/services`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE}/team`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/contact`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.5 },
-    { url: `${BASE}/athletes`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/talent`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     ...athleteRoutes,
     ...blogRoutes,

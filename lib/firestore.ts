@@ -13,7 +13,7 @@ import {
   type DocumentData,
 } from "firebase/firestore"
 import { app } from "./firebase"
-import type { Athlete, BlogPost } from "./data"
+import type { Athlete, BlogPost, Service, TeamMember } from "./data"
 
 const db = getFirestore(app)
 
@@ -97,4 +97,54 @@ export async function updateBlogPost(id: string, data: Partial<Omit<BlogPost, "i
 
 export async function deleteBlogPost(id: string): Promise<void> {
   await deleteDoc(doc(db, "blogPosts", id))
+}
+
+export async function getServices(): Promise<Service[]> {
+  const q = query(collection(db, "services"), orderBy("order", "asc"))
+  const snap = await getDocs(q)
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Service))
+}
+
+export async function getServiceById(id: string): Promise<Service | null> {
+  const snap = await getDoc(doc(db, "services", id))
+  if (!snap.exists()) return null
+  return { id: snap.id, ...snap.data() } as Service
+}
+
+export async function createService(data: Omit<Service, "id">): Promise<string> {
+  const ref = await addDoc(collection(db, "services"), data as DocumentData)
+  return ref.id
+}
+
+export async function updateService(id: string, data: Partial<Omit<Service, "id">>): Promise<void> {
+  await updateDoc(doc(db, "services", id), data as DocumentData)
+}
+
+export async function deleteService(id: string): Promise<void> {
+  await deleteDoc(doc(db, "services", id))
+}
+
+export async function getTeamMembers(): Promise<TeamMember[]> {
+  const q = query(collection(db, "managementTeam"), orderBy("order", "asc"))
+  const snap = await getDocs(q)
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as TeamMember))
+}
+
+export async function getTeamMemberById(id: string): Promise<TeamMember | null> {
+  const snap = await getDoc(doc(db, "managementTeam", id))
+  if (!snap.exists()) return null
+  return { id: snap.id, ...snap.data() } as TeamMember
+}
+
+export async function createTeamMember(data: Omit<TeamMember, "id">): Promise<string> {
+  const ref = await addDoc(collection(db, "managementTeam"), data as DocumentData)
+  return ref.id
+}
+
+export async function updateTeamMember(id: string, data: Partial<Omit<TeamMember, "id">>): Promise<void> {
+  await updateDoc(doc(db, "managementTeam", id), data as DocumentData)
+}
+
+export async function deleteTeamMember(id: string): Promise<void> {
+  await deleteDoc(doc(db, "managementTeam", id))
 }

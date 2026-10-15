@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import nodemailer from "nodemailer"
 import { z } from "zod"
 
-const SITE_EMAIL = "hello@gayduosa.com"
+const SITE_EMAIL = "info@gayduoma.com"
 const SITE_NAME = "Gayduo Management Agency"
 
 const SUBJECTS = {

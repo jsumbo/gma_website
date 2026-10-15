@@ -1,9 +1,12 @@
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { team, avatarUrl } from "@/lib/team"
+import { getTeamMembers } from "@/lib/firestore"
+import { team as staticTeam, teamMemberImage } from "@/lib/team"
 import { ArrowRight } from "lucide-react"
 import type { Metadata } from "next"
+
+export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
   title: "Our Team",
@@ -19,7 +22,11 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", images: ["/opengraph-image"] },
 }
 
-export default function TeamPage() {
+export default async function TeamPage() {
+  const fetched = await getTeamMembers().catch(() => staticTeam)
+  // An empty collection isn't an error, so .catch() alone won't fall back — cover that too.
+  const team = fetched.length > 0 ? fetched : staticTeam
+
   return (
     <div className="min-h-screen flex flex-col bg-[#fafaf9]">
       <Header />
@@ -32,20 +39,20 @@ export default function TeamPage() {
               OUR <span style={{ color: "#fee11b" }}>TEAM.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
-              The management team working behind every deal, every negotiation, and every partnership.
+              A dedicated team working 24/7 to deliver best-in-class service, operational excellence, and deep industry experience – ensuring your career is in the safest of hands. 
             </p>
           </div>
         </section>
 
         <section className="py-20 lg:py-28 px-7 sm:px-12 lg:px-16 xl:px-24">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-14 sm:grid-cols-3">
               {team.map((member) => (
-                <div key={member.name} className="group">
+                <div key={member.id} className="group">
                   <div className="relative mb-5 aspect-square overflow-hidden" style={{ backgroundColor: "#fee11b" }}>
                     {/* eslint-disable-next-line @next/next/no-img-element -- dynamically generated external SVG, no benefit from next/image optimization */}
                     <img
-                      src={avatarUrl(member.name)}
+                      src={teamMemberImage(member)}
                       alt={`${member.name} — ${member.role}`}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

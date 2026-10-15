@@ -29,7 +29,7 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto">
             <h1 className="font-display leading-[0.88] text-white" style={{ fontSize: "clamp(2.6rem, 7vw, 6.5rem)" }}>
               CONNECTING TALENT<br />
-              WITH <span style={{ color: "#fee11b" }}>BRANDS.</span>
+              WITH <span style={{ color: "#fee11b" }}>OPPORTUNITIES.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
               Creating opportunities through strategic partnerships.

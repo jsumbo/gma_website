@@ -1,14 +1,15 @@
 "use client"
 
-import { useState, useRef, use, useEffect } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft, Plus, X, Upload, ChevronDown, Film } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AdminShell } from "@/components/admin-shell"
-import { getAthleteById, updateAthlete, deleteAthlete } from "@/lib/firestore"
+import { createAthlete } from "@/lib/firestore"
 import { uploadImage } from "@/lib/storage"
+import type { TalentArea } from "@/lib/data"
 import { toast } from "sonner"
 
 const POSITIONS = [
@@ -16,6 +17,8 @@ const POSITIONS = [
   "Defensive Midfielder", "Central Midfielder", "Attacking Midfielder",
   "Right Winger", "Left Winger", "Forward", "Striker",
 ]
+
+const AREAS: TalentArea[] = ["Athlete", "Creator", "Model"]
 
 interface VideoEntry {
   label: string
@@ -40,32 +43,22 @@ function isVideoUrl(url: string) {
   return /\.(mp4|webm|mov|avi|m4v)(\?|$)/i.test(url)
 }
 
-function isYouTubeUrl(url: string) {
-  return url.includes("youtube.com") || url.includes("youtu.be")
-}
-
-interface EditAthletePageProps {
-  params: Promise<{ id: string }>
-}
-
-export default function EditAthletePage({ params }: EditAthletePageProps) {
+export default function NewAthletePage() {
   return (
     <AdminShell>
-      <EditAthleteContent params={params} />
+      <AthleteForm />
     </AdminShell>
   )
 }
 
-function EditAthleteContent({ params }: EditAthletePageProps) {
-  const { id } = use(params)
+function AthleteForm() {
   const router = useRouter()
-  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [savingMsg, setSavingMsg] = useState("")
-  const [athleteName, setAthleteName] = useState("")
 
   const [name, setName] = useState("")
   const [slug, setSlug] = useState("")
+  const [area, setArea] = useState<TalentArea>("Athlete")
   const [position, setPosition] = useState("")
   const [team, setTeam] = useState("")
   const [number, setNumber] = useState("")
@@ -74,68 +67,34 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
   const [height, setHeight] = useState("")
   const [preferredFoot, setPreferredFoot] = useState("")
   const [biography, setBiography] = useState("")
+
   const [mainImage, setMainImage] = useState<string | null>(null)
   const [mainImageFile, setMainImageFile] = useState<File | null>(null)
   const imageRef = useRef<HTMLInputElement>(null)
+
   const [appearances, setAppearances] = useState("")
   const [goals, setGoals] = useState("")
   const [assists, setAssists] = useState("")
   const [cleanSheets, setCleanSheets] = useState("")
+
   const [achievements, setAchievements] = useState([{ year: "", title: "" }])
+
   const [instagram, setInstagram] = useState("")
   const [twitter, setTwitter] = useState("")
   const [facebook, setFacebook] = useState("")
+
   const [highlightVideos, setHighlightVideos] = useState<VideoEntry[]>([
     { label: "", mode: "youtube", url: "", file: null },
   ])
+
   const [gallery, setGallery] = useState<string[]>([])
   const [galleryFiles, setGalleryFiles] = useState<(File | null)[]>([])
   const galleryRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    getAthleteById(id).then((athlete) => {
-      if (!athlete) {
-        toast.error("Athlete not found")
-        router.push("/gsa/athletes")
-        return
-      }
-      setAthleteName(athlete.name)
-      setName(athlete.name)
-      setSlug(athlete.slug)
-      setPosition(athlete.position)
-      setTeam(athlete.team)
-      setNumber(String(athlete.number))
-      setNationality(athlete.nationality)
-      setDateOfBirth(athlete.dateOfBirth)
-      setHeight(athlete.height)
-      setPreferredFoot(athlete.preferredFoot)
-      setBiography(athlete.biography)
-      setMainImage(athlete.image)
-      setAppearances(String(athlete.stats.appearances))
-      setGoals(String(athlete.stats.goals))
-      setAssists(String(athlete.stats.assists))
-      setCleanSheets(String(athlete.stats.cleanSheets ?? ""))
-      setAchievements(athlete.achievements.length > 0 ? athlete.achievements.map((a) => ({ ...a })) : [{ year: "", title: "" }])
-      setInstagram(athlete.socialLinks.instagram ?? "")
-      setTwitter(athlete.socialLinks.twitter ?? "")
-      setFacebook(athlete.socialLinks.facebook ?? "")
-      setGallery(athlete.gallery)
-      setGalleryFiles(athlete.gallery.map(() => null))
-
-      if (athlete.highlightVideos && athlete.highlightVideos.length > 0) {
-        setHighlightVideos(athlete.highlightVideos.map((v) => ({
-          label: v.label ?? "",
-          mode: isYouTubeUrl(v.url) ? "youtube" : "upload",
-          url: v.url,
-          file: null,
-        })))
-      } else if (athlete.highlightVideo) {
-        setHighlightVideos([{ label: "", mode: "youtube", url: athlete.highlightVideo, file: null }])
-      }
-
-      setLoading(false)
-    })
-  }, [id, router])
+  const handleNameChange = (val: string) => {
+    setName(val)
+    setSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""))
+  }
 
   const handleMainImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -215,8 +174,8 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
       }
 
       setSavingMsg("Saving athlete...")
-      await updateAthlete(id, {
-        name, slug, position, team,
+      await createAthlete({
+        name, slug, area, position, team,
         number: Number(number),
         nationality, dateOfBirth, height, preferredFoot, biography,
         image: imageUrl,
@@ -233,46 +192,27 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
           ...(twitter ? { twitter } : {}),
           ...(facebook ? { facebook } : {}),
         },
-        highlightVideos: savedVideos,
+        ...(savedVideos.length > 0 ? { highlightVideos: savedVideos } : {}),
       })
-      toast.success("Athlete updated!")
-      router.push("/gsa/athletes")
+      toast.success("Athlete added to roster!")
+      router.push("/gsa/talent")
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to update athlete")
+      toast.error(err instanceof Error ? err.message : "Failed to save athlete")
       setSaving(false)
       setSavingMsg("")
     }
-  }
-
-  const handleDelete = async () => {
-    if (!confirm(`Remove ${athleteName} from the roster? This cannot be undone.`)) return
-    try {
-      await deleteAthlete(id)
-      toast.success("Athlete removed from roster")
-      router.push("/gsa/athletes")
-    } catch {
-      toast.error("Failed to delete athlete")
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin h-8 w-8 border-2 border-foreground border-t-transparent rounded-full" />
-      </div>
-    )
   }
 
   return (
     <div className="p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-          <Link href="/gsa/athletes">
+          <Link href="/gsa/talent">
             <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold">Edit Athlete</h1>
-            <p className="text-muted-foreground text-sm mt-1">Update {athleteName}&apos;s profile</p>
+            <h1 className="text-2xl font-bold">Add Talent</h1>
+            <p className="text-muted-foreground text-sm mt-1">Create a new talent profile</p>
           </div>
         </div>
 
@@ -283,23 +223,48 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium mb-2">Full Name *</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors" required />
+                <input type="text" value={name} onChange={(e) => handleNameChange(e.target.value)}
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors"
+                  placeholder="e.g. Vasco Jacobs" required />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium mb-2">URL Slug</label>
                 <div className="flex items-center">
-                  <span className="text-sm text-muted-foreground px-4 py-3 bg-muted border border-r-0 border-border rounded-l-lg">/athletes/</span>
+                  <span className="text-sm text-muted-foreground px-4 py-3 bg-muted border border-r-0 border-border rounded-l-lg">/talent/</span>
                   <input type="text" value={slug} onChange={(e) => setSlug(e.target.value)}
-                    className="flex-1 px-4 py-3 border border-border rounded-r-lg focus:border-foreground focus:outline-none transition-colors" />
+                    className="flex-1 px-4 py-3 border border-border rounded-r-lg focus:border-foreground focus:outline-none transition-colors"
+                    placeholder="player-name" />
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium mb-2">Area *</label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Athletes get their own profile page and show their team on the roster card. Creators and Models show their area instead and aren&apos;t clickable.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {AREAS.map((a) => (
+                    <button
+                      key={a}
+                      type="button"
+                      onClick={() => setArea(a)}
+                      className="px-4 py-2 rounded-lg border text-sm font-medium transition-colors"
+                      style={area === a
+                        ? { borderColor: "#01255f", backgroundColor: "#01255f", color: "#fee11b" }
+                        : { borderColor: "var(--border)", color: "var(--muted-foreground)" }
+                      }
+                    >
+                      {a}
+                    </button>
+                  ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Position *</label>
+                <label className="block text-sm font-medium mb-2">Position {area === "Athlete" && "*"}</label>
                 <div className="relative">
                   <select value={position} onChange={(e) => setPosition(e.target.value)}
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors appearance-none bg-background" required>
+                    className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors appearance-none bg-background" required={area === "Athlete"}>
                     <option value="">Select position</option>
                     {POSITIONS.map((p) => <option key={p} value={p}>{p}</option>)}
                   </select>
@@ -310,19 +275,22 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
               <div>
                 <label className="block text-sm font-medium mb-2">Jersey Number</label>
                 <input type="number" value={number} onChange={(e) => setNumber(e.target.value)} min="1" max="99"
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors" />
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors"
+                  placeholder="e.g. 9" />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Current Club *</label>
+                <label className="block text-sm font-medium mb-2">Current Club {area === "Athlete" && "*"}</label>
                 <input type="text" value={team} onChange={(e) => setTeam(e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors" required />
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors"
+                  placeholder="e.g. Thunder FC" required={area === "Athlete"} />
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2">Nationality *</label>
                 <input type="text" value={nationality} onChange={(e) => setNationality(e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors" required />
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors"
+                  placeholder="e.g. Liberian" required />
               </div>
 
               <div>
@@ -334,7 +302,8 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
               <div>
                 <label className="block text-sm font-medium mb-2">Height</label>
                 <input type="text" value={height} onChange={(e) => setHeight(e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors" placeholder="e.g. 1.85m" />
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors"
+                  placeholder="e.g. 1.85m" />
               </div>
 
               <div>
@@ -355,7 +324,8 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
             <div>
               <label className="block text-sm font-medium mb-2">Biography *</label>
               <textarea value={biography} onChange={(e) => setBiography(e.target.value)} rows={6}
-                className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors resize-none" required />
+                className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors resize-none"
+                placeholder="Write the athlete's biography here..." required />
             </div>
           </section>
 
@@ -367,9 +337,8 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
                 <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-muted">
                   <Image src={mainImage} alt="Preview" fill className="object-cover" />
                 </div>
-                <button type="button"
-                  onClick={() => { setMainImage(null); setMainImageFile(null); if (imageRef.current) imageRef.current.value = "" }}
-                  className="absolute -top-2 -right-2 p-1.5 bg-background border border-border rounded-full shadow">
+                <button type="button" onClick={() => { setMainImage(null); setMainImageFile(null); if (imageRef.current) imageRef.current.value = "" }}
+                  className="absolute -top-2 -right-2 p-1.5 bg-background border border-border rounded-full shadow hover:bg-muted transition-colors">
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -378,6 +347,7 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
                 className="border-2 border-dashed border-border rounded-lg p-10 text-center cursor-pointer hover:border-muted-foreground transition-colors max-w-xs">
                 <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-3" />
                 <p className="text-sm text-muted-foreground">Click to upload profile photo</p>
+                <p className="text-xs text-muted-foreground mt-1">Portrait format recommended (3:4)</p>
               </div>
             )}
             <input ref={imageRef} type="file" accept="image/*" onChange={handleMainImage} className="hidden" />
@@ -385,7 +355,10 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
 
           {/* Career Stats */}
           <section className="bg-background border border-border rounded-lg p-6 space-y-6">
-            <h2 className="text-lg font-semibold">Career Statistics</h2>
+            <div>
+              <h2 className="text-lg font-semibold">Career Statistics</h2>
+              <p className="text-sm text-muted-foreground mt-1">All-time career totals</p>
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
                 { label: "Appearances", value: appearances, set: setAppearances },
@@ -406,7 +379,10 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
           {/* Achievements */}
           <section className="bg-background border border-border rounded-lg p-6 space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Achievements &amp; Honours</h2>
+              <div>
+                <h2 className="text-lg font-semibold">Achievements &amp; Honours</h2>
+                <p className="text-sm text-muted-foreground mt-1">Add career trophies and milestones</p>
+              </div>
               <Button type="button" variant="outline" size="sm" onClick={addAchievement} className="gap-1">
                 <Plus className="h-3.5 w-3.5" /> Add
               </Button>
@@ -569,20 +545,13 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
           </section>
 
           {/* Actions */}
-          <div className="flex items-center justify-between">
-            <Button type="button" variant="outline"
-              className="text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
-              onClick={handleDelete} disabled={saving}>
-              Delete Athlete
+          <div className="flex items-center justify-end gap-4">
+            <Link href="/gsa/talent">
+              <Button type="button" variant="outline">Cancel</Button>
+            </Link>
+            <Button type="submit" disabled={saving}>
+              {saving ? (savingMsg || "Saving...") : "Save Talent"}
             </Button>
-            <div className="flex items-center gap-4">
-              <Link href="/gsa/athletes">
-                <Button type="button" variant="outline">Cancel</Button>
-              </Link>
-              <Button type="submit" disabled={saving}>
-                {saving ? (savingMsg || "Saving...") : "Update Athlete"}
-              </Button>
-            </div>
           </div>
         </form>
       </div>
