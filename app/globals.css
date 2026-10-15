@@ -74,7 +74,7 @@
 @theme inline {
   /* Fonts */
   --font-sans: var(--font-dmsans), 'DM Sans', system-ui, sans-serif;
-  --font-display: var(--font-bebas), 'Bebas Neue', sans-serif;
+  --font-display: var(--font-staatliches), 'Staatliches', sans-serif;
   --font-heading: var(--font-barlow), 'Barlow Condensed', sans-serif;
   --font-mono: ui-monospace, monospace;
 
@@ -156,4 +156,9 @@
 }
 .font-heading {
   font-family: var(--font-heading);
+}
+/* Navbar text — matches the reference's bold, non-condensed, normal-tracking nav style */
+.font-nav {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  letter-spacing: normal;
 }

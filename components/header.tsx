@@ -2,15 +2,21 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState, useEffect, type CSSProperties, type MouseEvent } from "react"
 import { Menu, X } from "lucide-react"
 import { usePathname } from "next/navigation"
 
-const navigation = [
-  { name: "Athletes", href: "/athletes" },
-  { name: "Blog", href: "/blog" },
-  { name: "About", href: "/about" },
+// Split either side of the centered logo, like a magazine masthead.
+// Order (left-to-right across the whole bar): Who We Are, Services, [logo], Our Team, Contact.
+const navLeft = [
+  { name: "Who We Are", href: "/about" },
+  { name: "Services", href: "/services" },
 ]
+const navRight = [
+  { name: "Our Team", href: "/team" },
+  { name: "Contact", href: "/contact" },
+]
+const navAll = [...navLeft, ...navRight]
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -19,80 +25,91 @@ export function Header() {
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40)
+    handler()
     window.addEventListener("scroll", handler, { passive: true })
     return () => window.removeEventListener("scroll", handler)
   }, [])
+
+  const isActive = (href: string) => pathname === href
+
+  const linkStyle = (active: boolean): CSSProperties => ({ color: active ? "#fee11b" : "rgba(255,255,255,0.75)" })
+  const onLinkEnter = (active: boolean) => (e: MouseEvent<HTMLAnchorElement>) => {
+    if (!active) e.currentTarget.style.color = "#ffffff"
+  }
+  const onLinkLeave = (active: boolean) => (e: MouseEvent<HTMLAnchorElement>) => {
+    if (!active) e.currentTarget.style.color = "rgba(255,255,255,0.75)"
+  }
+
+  const NavLink = ({ item }: { item: { name: string; href: string } }) => {
+    const active = isActive(item.href)
+    return (
+      <Link
+        href={item.href}
+        className="relative pb-0.5 font-nav text-xl uppercase transition-colors"
+        style={linkStyle(active)}
+        onMouseEnter={onLinkEnter(active)}
+        onMouseLeave={onLinkLeave(active)}
+      >
+        {item.name}
+        <span
+          className="absolute bottom-0 left-0 h-px transition-all duration-300"
+          style={{ backgroundColor: "#fee11b", width: active ? "100%" : "0%" }}
+        />
+      </Link>
+    )
+  }
 
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       style={{
-        backgroundColor: "#01255f",
+        backgroundColor: scrolled ? "#01255f" : "transparent",
         borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
         boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.25)" : "none",
       }}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 lg:px-10 h-16">
-        {/* Logo */}
-        <Link href="/" className="flex items-center shrink-0">
-          <Image
-            src="/Web_Logo.svg"
-            alt="Gayduo Sports Agency"
-            width={120}
-            height={44}
-            className="h-9 w-auto"
-            priority
-          />
-        </Link>
+      {/* Scrim so nav text stays legible before the background solidifies */}
+      {!scrolled && (
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28"
+          style={{ background: "linear-gradient(to bottom, rgba(1,37,95,0.55), transparent)" }}
+        />
+      )}
 
-        {/* Desktop nav */}
-        <div className="hidden lg:flex items-center gap-8">
-          {navigation.map((item) => {
-            const active = pathname === item.href
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="relative text-[0.8rem] font-heading font-semibold uppercase tracking-[0.12em] transition-colors pb-0.5 group"
-                style={{ color: active ? "#fee11b" : "rgba(255,255,255,0.65)" }}
-                onMouseEnter={(e) => { if (!active) e.currentTarget.style.color = "#ffffff" }}
-                onMouseLeave={(e) => { if (!active) e.currentTarget.style.color = "rgba(255,255,255,0.65)" }}
-              >
-                {item.name}
-                <span
-                  className="absolute bottom-0 left-0 h-px transition-all duration-300 origin-left"
-                  style={{
-                    backgroundColor: "#fee11b",
-                    width: active ? "100%" : "0%",
-                  }}
-                />
-              </Link>
-            )
-          })}
-        </div>
-
-        {/* Desktop CTA */}
-        <div className="hidden lg:flex items-center gap-4">
-          <Link
-            href="/about#contact"
-            className="text-[0.75rem] font-heading font-bold uppercase tracking-[0.15em] px-5 py-2.5 transition-all duration-200"
-            style={{ backgroundColor: "#fee11b", color: "#01255f" }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#ffffff" }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#fee11b" }}
-          >
-            Contact
+      <nav className="relative flex h-16 items-center px-7 sm:px-12 lg:px-16 xl:px-24">
+        {/* Mobile: logo left, menu button right */}
+        <div className="flex w-full items-center justify-between lg:hidden">
+          <Link href="/" className="flex shrink-0 items-center">
+            <Image src="/Web_Logo.svg" alt="Gayduo Management Agency" width={120} height={44} className="h-9 w-auto" priority />
           </Link>
+          <button
+            type="button"
+            className="p-2 text-white/80 transition-colors hover:text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
 
-        {/* Mobile button */}
-        <button
-          type="button"
-          className="lg:hidden p-2 text-white/70 hover:text-white transition-colors"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        {/* Desktop: links pulled in close to the centered logo, not pinned to the page edges */}
+        <div className="mx-auto hidden w-full max-w-4xl items-center justify-between lg:flex">
+          <div className="flex items-center gap-12">
+            {navLeft.map((item) => (
+              <NavLink key={item.name} item={item} />
+            ))}
+          </div>
+
+          <Link href="/" className="absolute left-1/2 flex -translate-x-1/2 items-center">
+            <Image src="/Web_Logo.svg" alt="Gayduo Management Agency" width={130} height={48} className="h-11 w-auto" priority />
+          </Link>
+
+          <div className="flex items-center gap-12">
+            {navRight.map((item) => (
+              <NavLink key={item.name} item={item} />
+            ))}
+          </div>
+        </div>
       </nav>
 
       {/* Mobile menu */}
@@ -101,29 +118,19 @@ export function Header() {
           className="lg:hidden"
           style={{ backgroundColor: "#01255f", borderTop: "1px solid rgba(255,255,255,0.08)" }}
         >
-          <div className="px-5 pt-3 pb-6 space-y-0">
-            {navigation.map((item) => (
+          <div className="space-y-0 px-5 pt-3 pb-6">
+            {navAll.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="flex items-center justify-between py-4 text-sm font-heading font-semibold uppercase tracking-[0.12em] border-b transition-colors"
+                className="flex items-center justify-between border-b py-4 font-nav text-base uppercase transition-colors"
                 style={{ color: "rgba(255,255,255,0.75)", borderColor: "rgba(255,255,255,0.06)" }}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
-                <span className="text-white/20 text-xs">→</span>
+                <span className="text-xs text-white/20">→</span>
               </Link>
             ))}
-            <div className="pt-5">
-              <Link
-                href="/about#contact"
-                className="block text-center py-3.5 text-sm font-heading font-bold uppercase tracking-[0.15em]"
-                style={{ backgroundColor: "#fee11b", color: "#01255f" }}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Contact Us
-              </Link>
-            </div>
           </div>
         </div>
       )}

@@ -19,28 +19,35 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const post = await getBlogPostBySlug(slug).catch(() => staticBlogPosts.find((p) => p.slug === slug) ?? null)
 
   if (!post) {
-    return { title: "Post Not Found | Gayduo Sports Agency" }
+    return { title: "Post Not Found" }
   }
 
   const ogImage = post.featuredImage.startsWith("http")
     ? post.featuredImage
     : `https://gayduosa.org${post.featuredImage}`
 
+  // The root layout's title template already appends "| Gayduo Management Agency" to every
+  // page title. Older posts (created before that template existed) may have it baked directly
+  // into seoTitle, which would otherwise show the brand name twice — strip it defensively.
+  const title = post.seoTitle.replace(/\s*\|\s*Gayduo (Management|Sports) Agency\s*$/i, "")
+
   return {
-    title: post.seoTitle,
+    title,
     description: post.seoDescription,
     keywords: post.seoKeywords,
+    alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
-      title: post.seoTitle,
+      title,
       description: post.seoDescription,
       images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
       type: "article",
       publishedTime: post.publishedAt,
       authors: [post.author],
+      url: `/blog/${post.slug}`,
     },
     twitter: {
       card: "summary_large_image",
-      title: post.seoTitle,
+      title,
       description: post.seoDescription,
       images: [ogImage],
     },
@@ -64,8 +71,39 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const allPosts = await getBlogPosts().catch(() => staticBlogPosts)
   const relatedPosts = allPosts.filter((p) => p.slug !== slug).slice(0, 3)
 
+  const postImage = post.featuredImage.startsWith("http")
+    ? post.featuredImage
+    : `https://gayduosa.org${post.featuredImage}`
+
+  // BlogPosting structured data — this is what lets Google's rich results and AI answer
+  // engines (Search Generative Experience, ChatGPT, Perplexity, etc.) actually parse this as
+  // an article (headline, author, publish date) rather than just a page of text.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.seoDescription || post.excerpt,
+    image: [postImage],
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    author: { "@type": "Organization", name: post.author, url: "https://gayduosa.org" },
+    publisher: {
+      "@type": "Organization",
+      name: "Gayduo Management Agency",
+      logo: { "@type": "ImageObject", url: "https://gayduosa.org/Web_Logo.svg" },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://gayduosa.org/blog/${post.slug}` },
+    keywords: post.seoKeywords?.join(", "),
+    articleSection: post.category,
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <Header />
 
       <main className="flex-1 pt-16">

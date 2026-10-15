@@ -12,11 +12,15 @@ export const dynamic = "force-dynamic"
 export const metadata: Metadata = {
   title: "Athletes",
   description:
-    "Meet the Gayduo Sports Agency roster — a select group of elite African footballers, each receiving the full attention and support they deserve.",
+    "Meet the Gayduo Management Agency roster — a select group of elite African footballers, each receiving the full attention and support they deserve.",
+  alternates: { canonical: "/athletes" },
   openGraph: {
-    title: "Our Athletes | Gayduo Sports Agency",
+    title: "Our Athletes | Gayduo Management Agency",
     description: "A select group of elite African footballers — each with a story, each with a future.",
+    url: "/athletes",
+    images: ["/opengraph-image"],
   },
+  twitter: { card: "summary_large_image", images: ["/opengraph-image"] },
 }
 
 export default async function AthletesPage() {
@@ -31,12 +35,6 @@ export default async function AthletesPage() {
         
         <section className="pt-32 pb-16 px-7 sm:px-12 lg:px-16 xl:px-24 gsa-grain" style={{ backgroundColor: "#01255f" }}>
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-6 h-px" style={{ backgroundColor: "#fee11b" }} />
-              <p className="font-heading font-semibold text-xs uppercase tracking-[0.25em]" style={{ color: "rgba(255,255,255,0.4)" }}>
-                The Family
-              </p>
-            </div>
             <h1 className="font-display leading-[0.88] text-white" style={{ fontSize: "clamp(4rem, 14vw, 13rem)" }}>
               OUR<br />
               ATHLETES
@@ -118,7 +116,7 @@ export default async function AthletesPage() {
               </p>
             </div>
             <a
-              href="/about#contact"
+              href="/contact"
               className="inline-flex items-center gap-2.5 px-8 py-4 font-heading font-bold uppercase tracking-[0.1em] text-sm shrink-0 transition-all duration-200 hover:gap-4"
               style={{ backgroundColor: "#fee11b", color: "#01255f" }}
             >

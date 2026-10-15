@@ -1,0 +1,11 @@
+packages:
+  - .
+
+# pnpm 11's supply-chain policy blocks postinstall/build scripts from dependencies until
+# explicitly approved here. These three are trusted, already-used parts of the stack
+# (Firebase SDK, Firebase's protobuf dep, and the Sharp image library used by Next.js
+# image optimization) — approved so `pnpm install` / `pnpm dev` don't fail or prompt.
+allowBuilds:
+  '@firebase/util': true
+  protobufjs: true
+  sharp: true

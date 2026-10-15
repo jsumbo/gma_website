@@ -4,17 +4,19 @@ import Link from "next/link"
 import { Instagram, Facebook, Mail } from "lucide-react"
 
 const navLinks = [
+  { name: "Who We Are", href: "/about" },
+  { name: "Services", href: "/services" },
+  { name: "Our Team", href: "/team" },
   { name: "Athletes", href: "/athletes" },
   { name: "Blog", href: "/blog" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/about#contact" },
+  { name: "Contact", href: "/contact" },
 ]
 
 const services = [
-  "Player Representation",
   "Contract Negotiation",
-  "Career Development",
-  "Brand Partnerships",
+  "Commercial Deals",
+  "Media & Broadcast",
+  "Public Relations",
 ]
 
 const offices = [
@@ -52,11 +54,11 @@ export function Footer() {
                   className="block font-display leading-[0.85]"
                   style={{ fontSize: "clamp(3rem, 9vw, 7rem)", color: "rgba(255,255,255,0.9)" }}
                 >
-                  SPORTS AGENCY
+                  MANAGEMENT AGENCY
                 </span>
               </Link>
               <p className="mt-5 font-heading font-semibold text-xs uppercase tracking-[0.2em] max-w-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
-                Representing the future of African football
+                Connecting talent with brands
               </p>
             </div>
 
@@ -169,7 +171,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="py-5 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="font-heading font-medium text-[0.65rem] uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>
-            &copy; {new Date().getFullYear()} Gayduo Sports Agency. All rights reserved.
+            &copy; {new Date().getFullYear()} Gayduo Management Agency. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             <span className="font-heading text-[0.65rem] uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.2)" }}>

@@ -159,7 +159,11 @@ function EditPostContent({ params }: EditPostPageProps) {
                     </span>
                     <input
                       type="text" id="slug" value={slug}
-                      onChange={(e) => setSlug(e.target.value)}
+                      // Normalize to lowercase/hyphens as they type, but don't trim a trailing
+                      // hyphen until blur — doing it on every keystroke would collapse "hello "
+                      // back to "hello" before the next word is typed, merging words together.
+                      onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "-"))}
+                      onBlur={(e) => setSlug(e.target.value.replace(/-{2,}/g, "-").replace(/(^-|-$)/g, ""))}
                       className="flex-1 px-4 py-3 border border-border rounded-r-lg focus:border-foreground focus:outline-none transition-colors"
                     />
                   </div>
