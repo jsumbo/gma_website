@@ -136,8 +136,14 @@ function AthleteForm() {
   const updateVideo = (i: number, patch: Partial<VideoEntry>) =>
     setHighlightVideos((prev) => prev.map((v, idx) => idx === i ? { ...v, ...patch } : v))
 
+  const isAthlete = area === "Athlete"
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!isAthlete && !mainImage) {
+      toast.error("Add a profile image")
+      return
+    }
     setSaving(true)
     try {
       const ts = Date.now()
@@ -147,6 +153,29 @@ function AthleteForm() {
       if (mainImageFile) {
         setSavingMsg("Uploading profile photo...")
         imageUrl = await uploadImage(mainImageFile, `athletes/${slug}/profile_${ts}.${ext(mainImageFile)}`)
+      }
+
+      if (!isAthlete) {
+        setSavingMsg("Saving talent...")
+        await createAthlete({
+          name, slug, area,
+          position: "",
+          team: "",
+          number: 0,
+          nationality: "",
+          dateOfBirth: "",
+          height: "",
+          preferredFoot: "",
+          biography: "",
+          image: imageUrl,
+          stats: { appearances: 0, goals: 0, assists: 0 },
+          achievements: [],
+          gallery: [],
+          socialLinks: {},
+        })
+        toast.success("Talent added to roster!")
+        router.push("/gsa/talent")
+        return
       }
 
       const galleryUrls: string[] = []
@@ -225,8 +254,9 @@ function AthleteForm() {
                 <label className="block text-sm font-medium mb-2">Full Name *</label>
                 <input type="text" value={name} onChange={(e) => handleNameChange(e.target.value)}
                   className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors"
-                  placeholder="e.g. Vasco Jacobs" required />
+                  placeholder="e.g. John Doe" required />
               </div>
+              {isAthlete && (
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium mb-2">URL Slug</label>
                 <div className="flex items-center">
@@ -236,11 +266,12 @@ function AthleteForm() {
                     placeholder="player-name" />
                 </div>
               </div>
+              )}
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium mb-2">Area *</label>
                 <p className="text-xs text-muted-foreground mb-2">
-                  Athletes get their own profile page and show their team on the roster card. Creators and Models show their area instead and aren&apos;t clickable.
+                  Athletes include the full profile. Creators and models only need a name and a photo — their card shows Creator or Model.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {AREAS.map((a) => (
@@ -260,11 +291,12 @@ function AthleteForm() {
                 </div>
               </div>
 
+              {isAthlete && <>
               <div>
-                <label className="block text-sm font-medium mb-2">Position {area === "Athlete" && "*"}</label>
+                <label className="block text-sm font-medium mb-2">Position *</label>
                 <div className="relative">
                   <select value={position} onChange={(e) => setPosition(e.target.value)}
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors appearance-none bg-background" required={area === "Athlete"}>
+                    className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors appearance-none bg-background" required>
                     <option value="">Select position</option>
                     {POSITIONS.map((p) => <option key={p} value={p}>{p}</option>)}
                   </select>
@@ -280,10 +312,10 @@ function AthleteForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Current Club {area === "Athlete" && "*"}</label>
+                <label className="block text-sm font-medium mb-2">Current Club *</label>
                 <input type="text" value={team} onChange={(e) => setTeam(e.target.value)}
                   className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors"
-                  placeholder="e.g. Thunder FC" required={area === "Athlete"} />
+                  placeholder="e.g. Thunder FC" required />
               </div>
 
               <div>
@@ -319,19 +351,22 @@ function AthleteForm() {
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 </div>
               </div>
+              </>}
             </div>
 
+            {isAthlete && (
             <div>
               <label className="block text-sm font-medium mb-2">Biography *</label>
               <textarea value={biography} onChange={(e) => setBiography(e.target.value)} rows={6}
                 className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors resize-none"
                 placeholder="Write the athlete's biography here..." required />
             </div>
+            )}
           </section>
 
           {/* Profile Image */}
           <section className="bg-background border border-border rounded-lg p-6 space-y-4">
-            <h2 className="text-lg font-semibold">Profile Image</h2>
+            <h2 className="text-lg font-semibold">Profile Image{!isAthlete && " *"}</h2>
             {mainImage ? (
               <div className="relative w-48">
                 <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-muted">
@@ -353,6 +388,7 @@ function AthleteForm() {
             <input ref={imageRef} type="file" accept="image/*" onChange={handleMainImage} className="hidden" />
           </section>
 
+          {isAthlete && <>
           {/* Career Stats */}
           <section className="bg-background border border-border rounded-lg p-6 space-y-6">
             <div>
@@ -543,6 +579,7 @@ function AthleteForm() {
               ))}
             </div>
           </section>
+          </>}
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-4">

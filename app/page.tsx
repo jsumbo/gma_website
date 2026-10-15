@@ -3,21 +3,14 @@ import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BlogCard } from "@/components/blog-card"
-import { getFeaturedBlogPosts, getServices } from "@/lib/firestore"
+import { getFeaturedBlogPosts } from "@/lib/firestore"
 import { blogPosts as staticBlogPosts } from "@/lib/data"
 import { ArrowRight, ArrowDown } from "lucide-react"
-import { ServicesGrid } from "@/components/services-grid"
-import { services as staticServices } from "@/lib/services"
 
 export const dynamic = "force-dynamic"
 
 export default async function HomePage() {
-  const [featuredPosts, fetchedServices] = await Promise.all([
-    getFeaturedBlogPosts().catch(() => staticBlogPosts.slice(0, 3)),
-    getServices().catch(() => staticServices),
-  ])
-  // An empty collection isn't an error, so .catch() alone won't fall back — cover that too.
-  const services = fetchedServices.length > 0 ? fetchedServices : staticServices
+  const featuredPosts = await getFeaturedBlogPosts().catch(() => staticBlogPosts.slice(0, 3))
 
   return (
     <div className="min-h-screen flex flex-col bg-[#fafaf9]">
@@ -109,7 +102,7 @@ export default async function HomePage() {
             />
           </div>
 
-          <div className="relative z-10 px-7 pt-20 sm:px-12 lg:px-16 lg:pt-28 xl:px-24">
+          <div className="relative z-10 px-7 py-20 sm:px-12 lg:px-16 lg:py-28 xl:px-24">
             <div className="mx-auto max-w-7xl">
               <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-16">
 
@@ -117,7 +110,7 @@ export default async function HomePage() {
                 <div className="relative mx-auto hidden w-full max-w-sm lg:col-span-4 lg:block lg:max-w-none">
                   <div className="relative aspect-3/4 overflow-hidden" style={{ clipPath: "polygon(8% 0, 100% 0, 92% 100%, 0 100%)" }}>
                     <Image
-                      src="/athletes/vasco-jacobs.jpg"
+                      src="/athletes/alvin-martor.jpg"
                       alt="One of our represented athletes"
                       fill
                       sizes="(max-width: 1024px) 0px, 33vw"
@@ -156,12 +149,6 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Service cards — liquid-glass panels: frosted + translucent, glowing icon, thin accent border */}
-          <div className="relative z-10 mt-14 px-7 pb-20 sm:px-12 lg:px-16 lg:pb-28 xl:px-24">
-            <div className="mx-auto max-w-7xl">
-              <ServicesGrid services={services} />
-            </div>
-          </div>
         </section>
 
         

@@ -131,7 +131,7 @@ function TalentContent() {
                               src={person.image}
                               alt={person.name}
                               fill
-                              className="object-cover grayscale"
+                              className="object-cover"
                             />
                           </div>
                           <div>
@@ -146,13 +146,13 @@ function TalentContent() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-sm text-muted-foreground">{person.position || "—"}</p>
+                        <p className="text-sm text-muted-foreground">{isAthlete ? (person.position || "—") : "—"}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-sm">{person.team || "—"}</p>
+                        <p className="text-sm">{isAthlete ? (person.team || "—") : "—"}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-sm text-muted-foreground">{person.nationality || "—"}</p>
+                        <p className="text-sm text-muted-foreground">{isAthlete ? (person.nationality || "—") : "—"}</p>
                       </td>
                       <td className="px-6 py-4">
                         {isAthlete ? (
