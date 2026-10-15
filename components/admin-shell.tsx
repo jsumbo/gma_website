@@ -1,13 +1,16 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { Menu } from "lucide-react"
 import { AdminSidebar } from "./admin-sidebar"
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [menuOpen, setMenuOpen] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     const auth = sessionStorage.getItem("gsa_auth")
@@ -18,6 +21,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     }
     setIsLoading(false)
   }, [router])
+
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [pathname])
 
   if (isLoading) {
     return (
@@ -30,9 +37,30 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   if (!isAuthenticated) return null
 
   return (
-    <div className="flex min-h-screen">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 min-h-screen bg-muted/20">
+    <div className="min-h-screen">
+      <div className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-background px-4 lg:hidden">
+        <button
+          type="button"
+          className="p-2"
+          aria-label="Open menu"
+          onClick={() => setMenuOpen(true)}
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+        <span className="text-sm font-semibold tracking-tight" style={{ color: "#01255f" }}>
+          Admin
+        </span>
+      </div>
+      {menuOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          aria-label="Close menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+      <AdminSidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <div className="min-h-screen bg-muted/20 lg:ml-64">
         {children}
       </div>
     </div>

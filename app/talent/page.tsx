@@ -67,21 +67,21 @@ export default async function TalentPage() {
                         priority={index < 3}
                       />
                       <span
-                        className="absolute left-4 top-4 px-2.5 py-1 font-heading text-[0.65rem] font-bold uppercase tracking-[0.16em]"
+                        className="absolute left-3 top-3 px-2 py-1 font-heading text-[0.6rem] font-bold uppercase tracking-[0.14em] sm:left-4 sm:top-4 sm:px-2.5 sm:text-[0.65rem]"
                         style={{ backgroundColor: "#fee11b", color: "#01255f" }}
                       >
                         {area}
                       </span>
                       <div
-                        className="absolute inset-x-0 bottom-0 px-5 pb-5 pt-28"
+                        className="absolute inset-x-0 bottom-0 px-3 pb-3 pt-16 sm:px-5 sm:pb-5 sm:pt-28"
                         style={{ background: "linear-gradient(to top, #01255f 0%, #01255f 34%, rgba(1,37,95,0.55) 62%, rgba(1,37,95,0) 100%)" }}
                       >
                         {isAthlete && detail && (
-                          <p className="font-heading text-[0.65rem] font-semibold uppercase tracking-[0.16em]" style={{ color: "#fee11b" }}>
+                          <p className="font-heading text-[0.6rem] font-semibold uppercase leading-snug tracking-[0.12em] text-balance sm:text-[0.65rem] sm:tracking-[0.16em]" style={{ color: "#fee11b" }}>
                             {detail}
                           </p>
                         )}
-                        <h2 className="mt-1 font-heading text-2xl font-bold leading-tight text-white">
+                        <h2 className="mt-1 font-heading text-xl font-bold leading-tight text-white sm:text-2xl">
                           {person.name}
                         </h2>
                         <p
