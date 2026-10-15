@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     "player representation", "Gayduo Management Agency", "campus culture talent",
     "lifestyle talent management", "African football", "Liberia football", "Rwanda football",
     "Kigali talent agency", "Monrovia talent agency", "sports marketing agency",
-    "Vasco Jacobs", "Alvin Martor", "Daniel Parker",
+    "Alvin Martor", "Daniel Parker",
   ],
   authors: [{ name: SITE_NAME }],
   creator: SITE_NAME,

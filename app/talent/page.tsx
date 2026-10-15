@@ -64,7 +64,7 @@ export default async function TalentPage() {
                           src={person.image}
                           alt={person.name}
                           fill
-                          className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105"
+                          className="object-cover transition-transform duration-700 scale-100 group-hover:scale-105"
                           priority={index < 3}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
@@ -90,17 +90,19 @@ export default async function TalentPage() {
 
                       {/* Info */}
                       <div>
-                        {isAthlete && person.position && (
+                        {(isAthlete ? person.position : area) && (
                           <p className="font-heading font-semibold text-[0.65rem] uppercase tracking-[0.2em] mb-1.5" style={{ color: "#fee11b" }}>
-                            {person.position}
+                            {isAthlete ? person.position : area}
                           </p>
                         )}
                         <h2 className="font-heading font-bold leading-tight mb-1 transition-colors" style={{ fontSize: "1.4rem", color: "#01255f" }}>
                           {person.name}
                         </h2>
-                        <p className="font-heading text-xs uppercase tracking-wider text-muted-foreground">
-                          {isAthlete ? person.team : area}
-                        </p>
+                        {isAthlete && (
+                          <p className="font-heading text-xs uppercase tracking-wider text-muted-foreground">
+                            {person.team}
+                          </p>
+                        )}
                       </div>
                     </article>
                   )
