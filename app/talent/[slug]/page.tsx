@@ -9,6 +9,7 @@ import { athletes as staticAthletes } from "@/lib/data"
 import { AthleteMedia } from "./athlete-media"
 import type { Metadata } from "next"
 import { SITE_URL } from "@/lib/site"
+import { firstParagraph, toRichHtml } from "@/lib/rich-text"
 
 export const revalidate = 60
 
@@ -90,7 +91,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
     nationality: athlete.nationality,
     birthDate: athlete.dateOfBirth,
     image: `${SITE_URL}${athlete.image}`,
-    description: athlete.biography.split("\n\n")[0],
+    description: firstParagraph(athlete.biography),
     worksFor: {
       "@type": "SportsTeam",
       name: athlete.team,
@@ -275,13 +276,10 @@ export default async function AthletePage({ params }: AthletePageProps) {
               <h2 className="font-display text-4xl sm:text-5xl mb-8" style={{ color: "#01255f" }}>
                 BIOGRAPHY
               </h2>
-              <div className="space-y-5">
-                {athlete.biography.split("\n\n").map((paragraph, index) => (
-                  <p key={index} className="text-base leading-relaxed text-muted-foreground">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+              <div
+                className="rich-content text-base leading-relaxed text-muted-foreground"
+                dangerouslySetInnerHTML={{ __html: toRichHtml(athlete.biography) }}
+              />
             </div>
           </div>
         </section>

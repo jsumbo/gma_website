@@ -11,6 +11,8 @@ import { createAthlete } from "@/lib/firestore"
 import { uploadImage, uploadMany } from "@/lib/storage"
 import type { TalentArea } from "@/lib/data"
 import { toast } from "sonner"
+import { htmlToPlainText } from "@/lib/rich-text"
+import { RichTextEditor } from "@/components/rich-text-editor"
 
 const POSITIONS = [
   "Goalkeeper", "Right Back", "Center Back", "Left Back",
@@ -142,6 +144,11 @@ function AthleteForm() {
     e.preventDefault()
     if (!isAthlete && !mainImage) {
       toast.error("Add a profile image")
+      return
+    }
+    // The rich text editor can't use the browser's `required`, so check for real text here.
+    if (isAthlete && !htmlToPlainText(biography)) {
+      toast.error("Add a biography")
       return
     }
     setSaving(true)
@@ -363,9 +370,7 @@ function AthleteForm() {
             {isAthlete && (
             <div>
               <label className="block text-sm font-medium mb-2">Biography *</label>
-              <textarea value={biography} onChange={(e) => setBiography(e.target.value)} rows={6}
-                className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors resize-none"
-                placeholder="Write the athlete's biography here..." required />
+              <RichTextEditor value={biography} onChange={setBiography} placeholder="Write the athlete's biography here..." />
             </div>
             )}
           </section>

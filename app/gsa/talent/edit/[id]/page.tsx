@@ -12,6 +12,8 @@ import { uploadImage, uploadMany } from "@/lib/storage"
 import type { TalentArea } from "@/lib/data"
 import { toast } from "sonner"
 import { useConfirm } from "@/components/confirm-dialog"
+import { htmlToPlainText, toRichHtml } from "@/lib/rich-text"
+import { RichTextEditor } from "@/components/rich-text-editor"
 
 const POSITIONS = [
   "Goalkeeper", "Right Back", "Center Back", "Left Back",
@@ -115,7 +117,7 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
       setDateOfBirth(athlete.dateOfBirth)
       setHeight(athlete.height)
       setPreferredFoot(athlete.preferredFoot)
-      setBiography(athlete.biography)
+      setBiography(toRichHtml(athlete.biography))
       setMainImage(athlete.image)
       setAppearances(String(athlete.stats.appearances))
       setGoals(String(athlete.stats.goals))
@@ -189,6 +191,11 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
     e.preventDefault()
     if (!isAthlete && !mainImage) {
       toast.error("Add a profile image")
+      return
+    }
+    // The rich text editor can't use the browser's `required`, so check for real text here.
+    if (isAthlete && !htmlToPlainText(biography)) {
+      toast.error("Add a biography")
       return
     }
     setSaving(true)
@@ -426,8 +433,7 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
             {isAthlete && (
             <div>
               <label className="block text-sm font-medium mb-2">Biography *</label>
-              <textarea value={biography} onChange={(e) => setBiography(e.target.value)} rows={6}
-                className="w-full px-4 py-3 border border-border rounded-lg focus:border-foreground focus:outline-none transition-colors resize-none" required />
+              <RichTextEditor value={biography} onChange={setBiography} placeholder="Write the athlete's biography here..." />
             </div>
             )}
           </section>

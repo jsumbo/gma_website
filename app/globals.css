@@ -207,3 +207,6 @@
 }
 .rich-content img { max-width: 100%; height: auto; border-radius: 0.5rem; }
 .rich-content-lg { font-size: 1.125rem; }
+/* Bold/underlined text should stand out even inside muted body copy (e.g. athlete biographies). */
+.rich-content strong, .rich-content b { font-weight: 700; color: var(--foreground); }
+.rich-content u { text-underline-offset: 3px; }

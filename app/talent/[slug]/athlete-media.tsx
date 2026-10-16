@@ -71,6 +71,52 @@ export function AthleteMedia({ gallery, highlightVideo, highlightVideos, athlete
 
   return (
     <>
+      {gallery.length > 0 && (
+        <section className="py-16 lg:py-24 px-7 sm:px-12 lg:px-16 xl:px-24">
+          <div className="mx-auto max-w-7xl">
+            <div className="w-8 h-[3px] mb-6" style={{ backgroundColor: "#fee11b" }} />
+            <h2 className="font-display text-4xl sm:text-5xl mb-10" style={{ color: "#01255f" }}>
+              GALLERY
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {gallery.map((url, index) => {
+                const isVid = isVideoUrl(url)
+                return (
+                  <div
+                    key={index}
+                    className="relative aspect-3/4 bg-neutral-900 cursor-pointer group overflow-hidden"
+                    onClick={() => isVid ? setActiveVideo(url) : setSelectedImage(url)}
+                  >
+                    {isVid ? (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Film className="h-10 w-10 text-white/20" />
+                      </div>
+                    ) : (
+                      <GalleryImage src={url} alt={`${athleteName} photo ${index + 1}`} />
+                    )}
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                      style={{ backgroundColor: "rgba(1,37,95,0.3)" }}
+                    >
+                      {isVid ? (
+                        <div
+                          className="w-14 h-14 flex items-center justify-center"
+                          style={{ backgroundColor: "#fee11b" }}
+                        >
+                          <Play className="h-5 w-5 ml-0.5" style={{ color: "#01255f" }} fill="currentColor" />
+                        </div>
+                      ) : (
+                        <span className="font-heading font-bold text-xs uppercase tracking-widest text-white/90">View</span>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       {videos.length > 0 && (
         <section className="py-16 lg:py-24 px-7 sm:px-12 lg:px-16 xl:px-24">
           <div className="mx-auto max-w-7xl">
@@ -152,52 +198,6 @@ export function AthleteMedia({ gallery, highlightVideo, highlightVideos, athlete
                 })}
               </div>
             )}
-          </div>
-        </section>
-      )}
-
-      {gallery.length > 0 && (
-        <section className="py-16 lg:py-24 px-7 sm:px-12 lg:px-16 xl:px-24">
-          <div className="mx-auto max-w-7xl">
-            <div className="w-8 h-[3px] mb-6" style={{ backgroundColor: "#fee11b" }} />
-            <h2 className="font-display text-4xl sm:text-5xl mb-10" style={{ color: "#01255f" }}>
-              GALLERY
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {gallery.map((url, index) => {
-                const isVid = isVideoUrl(url)
-                return (
-                  <div
-                    key={index}
-                    className="relative aspect-3/4 bg-neutral-900 cursor-pointer group overflow-hidden"
-                    onClick={() => isVid ? setActiveVideo(url) : setSelectedImage(url)}
-                  >
-                    {isVid ? (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Film className="h-10 w-10 text-white/20" />
-                      </div>
-                    ) : (
-                      <GalleryImage src={url} alt={`${athleteName} photo ${index + 1}`} />
-                    )}
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
-                      style={{ backgroundColor: "rgba(1,37,95,0.3)" }}
-                    >
-                      {isVid ? (
-                        <div
-                          className="w-14 h-14 flex items-center justify-center"
-                          style={{ backgroundColor: "#fee11b" }}
-                        >
-                          <Play className="h-5 w-5 ml-0.5" style={{ color: "#01255f" }} fill="currentColor" />
-                        </div>
-                      ) : (
-                        <span className="font-heading font-bold text-xs uppercase tracking-widest text-white/90">View</span>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
           </div>
         </section>
       )}
