@@ -23,15 +23,12 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     return { title: "Post Not Found" }
   }
 
-  const ogImage = post.featuredImage.startsWith("http")
-    ? post.featuredImage
-    : `${SITE_URL}${post.featuredImage}`
-
   // The root layout's title template already appends "| Gayduo Management Agency" to every
   // page title. Older posts (created before that template existed) may have it baked directly
   // into seoTitle, which would otherwise show the brand name twice — strip it defensively.
   const title = post.seoTitle.replace(/\s*\|\s*Gayduo (Management|Sports) Agency\s*$/i, "")
 
+  // og:image / twitter:image come from ./opengraph-image.tsx (featured image cropped to 1200×630).
   return {
     title,
     description: post.seoDescription,
@@ -40,7 +37,6 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     openGraph: {
       title,
       description: post.seoDescription,
-      images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
       type: "article",
       publishedTime: post.publishedAt,
       authors: [post.author],
@@ -50,7 +46,6 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       card: "summary_large_image",
       title,
       description: post.seoDescription,
-      images: [ogImage],
     },
   }
 }

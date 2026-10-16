@@ -137,7 +137,7 @@ export default async function HomePage() {
                     From contract negotiations and club moves to sponsorships and life after the final whistle — we cover every dimension of a player&apos;s career. Not as a service. As a partnership.
                   </p>
                   <Link
-                    href="/about"
+                    href="/services"
                     className="mt-8 inline-flex items-center gap-2.5 px-7 py-3.5 font-heading text-sm font-bold uppercase tracking-[0.1em] transition-all duration-200 hover:gap-4"
                     style={{ backgroundColor: "#fee11b", color: "#01255f" }}
                   >
