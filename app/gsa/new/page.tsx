@@ -217,7 +217,7 @@ function NewPostContent() {
                 {featuredImage ? (
                   <div className="relative">
                     <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
-                      <Image src={featuredImage} alt="Featured image preview" fill className="object-cover" />
+                      <Image src={featuredImage} alt="Featured image preview" fill className="object-cover object-top" />
                     </div>
                     <button
                       type="button"
@@ -263,7 +263,10 @@ function NewPostContent() {
                     placeholder="SEO optimized title (50-60 characters)"
                     maxLength={60}
                   />
-                  <p className="text-xs text-muted-foreground mt-1 text-right">{seoTitle.length}/60</p>
+                  <div className="mt-1 flex justify-between gap-4 text-xs text-muted-foreground">
+                    <span>&ldquo;| Gayduo Management Agency&rdquo; is added automatically &mdash; don&apos;t type it.</span>
+                    <span>{seoTitle.length}/60</span>
+                  </div>
                 </div>
                 <div>
                   <label htmlFor="seoDescription" className="block text-sm font-medium mb-2">Meta Description</label>

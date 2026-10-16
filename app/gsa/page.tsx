@@ -206,7 +206,7 @@ function BlogPostCard({ post, onDelete }: { post: BlogPost; onDelete: () => void
             alt={post.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover"
+            className="object-cover object-top"
           />
         )}
         <div className="absolute left-3 top-3 flex gap-2">

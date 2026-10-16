@@ -152,7 +152,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   fill
                   priority
                   sizes="(max-width: 768px) 100vw, 80vw"
-                  className="object-cover"
+                  className="object-cover object-top"
                 />
               </div>
             </div>
@@ -188,7 +188,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         src={relatedPost.featuredImage}
                         alt={relatedPost.title}
                         fill
-                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        className="object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500"
                       />
                     </div>
                     <h3 className="font-semibold group-hover:underline underline-offset-4" style={{ color: "#01255f" }}>
