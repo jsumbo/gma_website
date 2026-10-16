@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Only athletes get a /talent/[slug] profile page — creators and models have none, so
   // including their slugs here would submit dead-end URLs to Google.
   const athleteRoutes: MetadataRoute.Sitemap = athletes
-    .filter((a) => isCleanSlug(a.slug) && (a.area ?? "Athlete") === "Athlete")
+    .filter((a) => isCleanSlug(a.slug))
     .map((a) => ({
       url: `${BASE}/talent/${a.slug}`,
       lastModified: new Date(),

@@ -63,7 +63,7 @@ export default async function TalentPage() {
                         src={person.image}
                         alt=""
                         fill
-                        className="object-cover"
+                        className="object-cover object-top"
                         priority={index < 3}
                       />
                       <span
@@ -85,8 +85,7 @@ export default async function TalentPage() {
                           {person.name}
                         </h2>
                         <p
-                          className={`mt-3 flex items-center gap-2 font-heading text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white ${isAthlete ? "" : "invisible"}`}
-                          aria-hidden={isAthlete ? undefined : true}
+                          className="mt-3 flex items-center gap-2 font-heading text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white"
                         >
                           <span
                             className="block h-[2px] w-8 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 group-focus-visible:scale-x-100"
@@ -100,8 +99,7 @@ export default async function TalentPage() {
                     </article>
                   )
 
-                  // Only athletes get a profile page. Creators and models stay on the roster.
-                  return isAthlete ? (
+                  return (
                     <Link
                       href={`/talent/${person.slug}`}
                       key={person.id}
@@ -110,10 +108,6 @@ export default async function TalentPage() {
                     >
                       {card}
                     </Link>
-                  ) : (
-                    <div key={person.id}>
-                      {card}
-                    </div>
                   )
                 })}
               </div>

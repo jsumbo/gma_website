@@ -38,9 +38,10 @@ const dmSans = DM_Sans({
 })
 
 const SITE_NAME = "Gayduo Management Agency"
-const SITE_TAGLINE = "Talent Management & Brand Partnerships"
+const SITE_TAGLINE = "The Pinnacle Of Representation"
+// Kept under ~155 characters so Google and link previews show it whole.
 const SITE_DESCRIPTION =
-  "Gayduo Management Agency connects talent with brands. We represent individuals across sports, lifestyle, and campus culture — including footballers and basketball players — and build the commercial partnerships that deliver value for both sides."
+  "We represent athletes, creators and models, connecting them to opportunities on and off the field."
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

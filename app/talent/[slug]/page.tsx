@@ -33,7 +33,22 @@ export async function generateMetadata({ params }: AthletePageProps): Promise<Me
     () => staticAthletes.find((a) => a.slug === slug) ?? null
   )
 
-  if (!athlete || (athlete.area && athlete.area !== "Athlete")) return { title: "Not Found" }
+  if (!athlete) return { title: "Not Found" }
+
+  const area = athlete.area ?? "Athlete"
+  if (area !== "Athlete") {
+    const title = `${athlete.name} — ${area}`
+    const description =
+      firstParagraph(athlete.biography) || `${athlete.name} is a ${area.toLowerCase()} represented by Gayduo Management Agency.`
+    return {
+      title,
+      description,
+      alternates: { canonical: `/talent/${athlete.slug}` },
+      keywords: [athlete.name, `${athlete.name} ${area.toLowerCase()}`, "Gayduo Management Agency"],
+      openGraph: { title, description, type: "profile", url: `/talent/${athlete.slug}` },
+      twitter: { card: "summary_large_image", title, description },
+    }
+  }
 
   const age = getAge(athlete.dateOfBirth)
   // No manual "| Gayduo Management Agency" suffix — the root layout's title template
@@ -76,26 +91,26 @@ export default async function AthletePage({ params }: AthletePageProps) {
     () => staticAthletes.find((a) => a.slug === slug) ?? null
   )
 
-  // Only athletes get a profile page — creators and models are listed on /talent but don't
-  // have one (per their roster card, which isn't a link in the first place).
-  if (!athlete || (athlete.area && athlete.area !== "Athlete")) notFound()
+  if (!athlete) notFound()
 
-  const age = getAge(athlete.dateOfBirth)
+  // Creators and models get a simpler profile: photo, name, socials and (optional) bio.
+  // Football-only parts (stats, jersey, position, foot) are athlete-only.
+  const area = athlete.area ?? "Athlete"
+  const isAthlete = area === "Athlete"
+  const hasBiography = !!firstParagraph(athlete.biography ?? "")
+  const age = isAthlete ? getAge(athlete.dateOfBirth) : null
 
   // JSON-LD structured data for Google
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: athlete.name,
-    jobTitle: athlete.position,
-    nationality: athlete.nationality,
-    birthDate: athlete.dateOfBirth,
-    image: `${SITE_URL}${athlete.image}`,
-    description: firstParagraph(athlete.biography),
-    worksFor: {
-      "@type": "SportsTeam",
-      name: athlete.team,
-    },
+    jobTitle: isAthlete ? athlete.position : area,
+    ...(athlete.nationality ? { nationality: athlete.nationality } : {}),
+    ...(athlete.dateOfBirth ? { birthDate: athlete.dateOfBirth } : {}),
+    image: athlete.image.startsWith("http") ? athlete.image : `${SITE_URL}${athlete.image}`,
+    ...(hasBiography ? { description: firstParagraph(athlete.biography) } : {}),
+    ...(isAthlete && athlete.team ? { worksFor: { "@type": "SportsTeam", name: athlete.team } } : {}),
     affiliation: {
       "@type": "Organization",
       name: "Gayduo Management Agency",
@@ -103,9 +118,9 @@ export default async function AthletePage({ params }: AthletePageProps) {
     },
     url: `${SITE_URL}/talent/${athlete.slug}`,
     sameAs: [
-      athlete.socialLinks.instagram,
-      athlete.socialLinks.twitter,
-      athlete.socialLinks.facebook,
+      athlete.socialLinks?.instagram,
+      athlete.socialLinks?.twitter,
+      athlete.socialLinks?.facebook,
     ].filter(Boolean),
   }
 
@@ -147,15 +162,15 @@ export default async function AthletePage({ params }: AthletePageProps) {
                     fill
                     priority
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover"
+                    className="object-cover object-top"
                   />
                   {/* Jersey number ghost */}
-                  <div
+                  {isAthlete && <div
                     className="absolute right-4 bottom-16 font-display leading-none select-none pointer-events-none"
                     style={{ fontSize: "clamp(6rem, 14vw, 10rem)", color: "rgba(255,255,255,0.1)" }}
                   >
                     {athlete.number}
-                  </div>
+                  </div>}
                   {/* Yellow top line */}
                   <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: "#fee11b" }} />
                 </div>
@@ -164,7 +179,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
               {/* Info */}
               <div className="lg:sticky lg:top-32">
                 <p className="font-heading font-semibold text-[0.65rem] uppercase tracking-[0.2em] mb-3" style={{ color: "#fee11b" }}>
-                  {athlete.position}
+                  {isAthlete ? athlete.position : area}
                 </p>
                 <h1
                   className="font-display leading-[0.88] mb-4"
@@ -172,10 +187,13 @@ export default async function AthletePage({ params }: AthletePageProps) {
                 >
                   {athlete.name.toUpperCase()}
                 </h1>
+                {isAthlete && athlete.team && (
                 <p className="font-heading font-semibold text-lg text-muted-foreground mb-8">
                   {athlete.team}
                 </p>
+                )}
 
+                {isAthlete && (<>
                 {/* Stats */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 py-8 border-y border-border mb-8">
                   {[
@@ -227,9 +245,11 @@ export default async function AthletePage({ params }: AthletePageProps) {
                   </div>
                 </div>
 
+                </>)}
+
                 {/* Social */}
                 <div className="flex items-center gap-2">
-                  {athlete.socialLinks.instagram && (
+                  {athlete.socialLinks?.instagram && (
                     <a
                       href={athlete.socialLinks.instagram}
                       target="_blank"
@@ -240,7 +260,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
                       <Instagram className="h-4 w-4" />
                     </a>
                   )}
-                  {athlete.socialLinks.twitter && (
+                  {athlete.socialLinks?.twitter && (
                     <a
                       href={athlete.socialLinks.twitter}
                       target="_blank"
@@ -251,7 +271,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
                       <Twitter className="h-4 w-4" />
                     </a>
                   )}
-                  {athlete.socialLinks.facebook && (
+                  {athlete.socialLinks?.facebook && (
                     <a
                       href={athlete.socialLinks.facebook}
                       target="_blank"
@@ -269,6 +289,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
         </section>
 
         {/* Biography */}
+        {hasBiography && (
         <section className="py-16 lg:py-24 px-7 sm:px-12 lg:px-16 xl:px-24 border-y border-border bg-white">
           <div className="mx-auto max-w-7xl">
             <div className="max-w-3xl">
@@ -283,9 +304,10 @@ export default async function AthletePage({ params }: AthletePageProps) {
             </div>
           </div>
         </section>
+        )}
 
         {/* Achievements */}
-        {athlete.achievements.length > 0 && (
+        {(athlete.achievements?.length ?? 0) > 0 && (
           <section className="py-16 lg:py-24 px-7 sm:px-12 lg:px-16 xl:px-24 gsa-grain" style={{ backgroundColor: "#01255f" }}>
             <div className="mx-auto max-w-7xl">
               <div className="w-8 h-[3px] mb-6" style={{ backgroundColor: "#fee11b" }} />
@@ -310,7 +332,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
 
         {/* Interactive: Video + Gallery (client component) */}
         <AthleteMedia
-          gallery={athlete.gallery}
+          gallery={athlete.gallery ?? []}
           highlightVideo={athlete.highlightVideo}
           highlightVideos={athlete.highlightVideos}
           athleteName={athlete.name}

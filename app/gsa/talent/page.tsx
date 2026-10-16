@@ -140,9 +140,8 @@ function TalentCard({ person, onDelete }: { person: Athlete; onDelete: () => voi
         <div className="mt-auto pt-5">
           <AdminManageMenu
             editHref={`/gsa/talent/edit/${person.id}`}
-            // Only athletes have their own profile page; creators and models appear on the /talent roster.
-            viewPath={isAthlete ? `/talent/${person.slug}` : "/talent"}
-            shareText={isAthlete ? `${person.name}, ${person.position} at ${person.team}` : person.name}
+            viewPath={`/talent/${person.slug}`}
+            shareText={isAthlete ? `${person.name}, ${person.position} at ${person.team}` : `${person.name}, ${area}`}
             onDelete={onDelete}
           />
         </div>

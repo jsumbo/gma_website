@@ -1,6 +1,6 @@
 # Gayduo Management Agency
 
-> Gayduo Management Agency is a talent management agency that connects talent with brands. We represent individuals across sports, lifestyle, and campus culture — including footballers and basketball players — and build the commercial partnerships that deliver value for both sides.
+> Gayduo Management Agency is a talent agency with offices in Monrovia, Liberia and Kigali, Rwanda. We represent athletes, creators and models, connecting them to opportunities on and off the field.
 
 ## About
 
@@ -11,7 +11,7 @@
 
 ## Talent
 
-- [Athletes](https://gayduoma.com/talent): The roster of athletes we represent, with individual profiles, stats, and career history.
+- [Talent](https://gayduoma.com/talent): The athletes, creators and models we represent, with individual profiles.
 
 ## News
 
