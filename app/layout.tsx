@@ -92,7 +92,7 @@ const organizationJsonLd = {
   name: SITE_NAME,
   alternateName: "GSA",
   url: SITE_URL,
-  logo: `${SITE_URL}/Web_Logo.svg`,
+  logo: `${SITE_URL}/logo-header.png`,
   description: SITE_DESCRIPTION,
   email: "info@gayduoma.com",
   sameAs: [

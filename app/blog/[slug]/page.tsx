@@ -86,7 +86,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     publisher: {
       "@type": "Organization",
       name: "Gayduo Management Agency",
-      logo: { "@type": "ImageObject", url: `${SITE_URL}/Web_Logo.svg` },
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/logo-header.png` },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${post.slug}` },
     keywords: post.seoKeywords?.join(", "),
