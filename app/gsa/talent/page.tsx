@@ -54,7 +54,7 @@ function TalentContent() {
 
   return (
     <div className="p-4 sm:p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="w-full">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold">Talent</h1>

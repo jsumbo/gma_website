@@ -2,18 +2,13 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Plus, Edit, Trash2, MoreHorizontal, UserCircle, ArrowUp, ArrowDown } from "lucide-react"
+import { Plus, UserCircle, ArrowLeft, ArrowRight } from "lucide-react"
 import { getTeamMembers, deleteTeamMember, updateTeamMember } from "@/lib/firestore"
 import type { TeamMember } from "@/lib/data"
 import { teamMemberImage } from "@/lib/team"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { AdminShell } from "@/components/admin-shell"
+import { AdminManageMenu } from "@/components/admin-manage-menu"
 import { toast } from "sonner"
 import { useConfirm } from "@/components/confirm-dialog"
 
@@ -82,7 +77,7 @@ function TeamContent() {
 
   return (
     <div className="p-4 sm:p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold">Team</h1>
@@ -117,93 +112,57 @@ function TeamContent() {
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-border bg-background">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Order
-                  </th>
-                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Name
-                  </th>
-                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Role
-                  </th>
-                  <th className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {items.map((member, i) => (
-                  <tr key={member.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col gap-0.5">
-                        <button
-                          type="button"
-                          disabled={reordering || i === 0}
-                          onClick={() => move(i, -1)}
-                          className="p-0.5 text-muted-foreground hover:text-foreground disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-                          aria-label="Move up"
-                        >
-                          <ArrowUp className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          disabled={reordering || i === items.length - 1}
-                          onClick={() => move(i, 1)}
-                          className="p-0.5 text-muted-foreground hover:text-foreground disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-                          aria-label="Move down"
-                        >
-                          <ArrowDown className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        {/* eslint-disable-next-line @next/next/no-img-element -- dynamically generated external SVG */}
-                        <img
-                          src={teamMemberImage(member)}
-                          alt=""
-                          className="h-10 w-10 shrink-0 rounded-full object-cover"
-                          style={{ backgroundColor: "#fee11b" }}
-                        />
-                        <p className="font-semibold text-sm">{member.name}</p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="text-sm text-muted-foreground">{member.role}</p>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link href={`/gsa/team/edit/${member.id}`} className="flex items-center gap-2">
-                              <Edit className="h-4 w-4" />
-                              Edit
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-destructive flex items-center gap-2"
-                            onClick={() => handleDelete(member)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {items.map((member, i) => (
+              <div key={member.id} className="flex flex-col overflow-hidden rounded-lg border border-border bg-background">
+                <div className="relative aspect-square" style={{ backgroundColor: "#fee11b" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- dynamically generated external SVG */}
+                  <img src={teamMemberImage(member)} alt="" className="absolute inset-0 h-full w-full object-cover object-top" />
+                  <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-background/90 px-2.5 py-0.5 text-xs font-medium">
+                    #{i + 1}
+                  </span>
+                </div>
+
+                <div className="flex flex-1 flex-col p-5">
+                  <h3 className="font-semibold">{member.name}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{member.role}</p>
+
+                  <div className="mt-auto pt-5 space-y-2">
+                    {/* Order on /team follows this grid, left to right. */}
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="flex-1 gap-1.5 text-muted-foreground"
+                        disabled={reordering || i === 0}
+                        onClick={() => move(i, -1)}
+                      >
+                        <ArrowLeft className="h-3.5 w-3.5" />
+                        Earlier
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="flex-1 gap-1.5 text-muted-foreground"
+                        disabled={reordering || i === items.length - 1}
+                        onClick={() => move(i, 1)}
+                      >
+                        Later
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                    <AdminManageMenu
+                      editHref={`/gsa/team/edit/${member.id}`}
+                      viewPath="/team"
+                      shareText={`${member.name}, ${member.role} at Gayduo Management Agency`}
+                      onDelete={() => handleDelete(member)}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

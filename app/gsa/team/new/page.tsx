@@ -80,7 +80,7 @@ function TeamMemberForm() {
 
   return (
     <div className="p-4 sm:p-8">
-      <div className="max-w-2xl mx-auto">
+      <div className="w-full">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/gsa/team">
             <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
