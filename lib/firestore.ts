@@ -10,11 +10,14 @@ import {
   query,
   where,
   orderBy,
+  getCountFromServer,
   type DocumentData,
+  type Timestamp,
 } from "firebase/firestore"
 import { app } from "./firebase"
 import { refreshSiteData } from "@/app/actions/refresh-site-data"
 import type { Athlete, BlogPost, Service, TeamMember } from "./data"
+import { CONTACT_COLLECTION, type ContactMessage, type ContactStatus } from "./contact"
 
 const db = getFirestore(app)
 
@@ -160,4 +163,28 @@ export async function updateTeamMember(id: string, data: Partial<Omit<TeamMember
 export async function deleteTeamMember(id: string): Promise<void> {
   await deleteDoc(doc(db, "managementTeam", id))
   await refreshSiteData().catch(() => {})
+}
+
+// Contact form messages (admin only — Firestore rules block everyone else). These don't affect public
+// pages, so they skip refreshSiteData().
+export async function getContactMessages(): Promise<ContactMessage[]> {
+  const snap = await getDocs(query(collection(db, CONTACT_COLLECTION), orderBy("createdAt", "desc")))
+  return snap.docs.map((d) => {
+    const data = d.data()
+    const created = data.createdAt as Timestamp | undefined
+    return { ...(data as Omit<ContactMessage, "id" | "createdAt">), id: d.id, createdAt: created?.toDate().toISOString() ?? "" }
+  })
+}
+
+export async function countNewContactMessages(): Promise<number> {
+  const snap = await getCountFromServer(query(collection(db, CONTACT_COLLECTION), where("status", "==", "new")))
+  return snap.data().count
+}
+
+export async function setContactMessageStatus(id: string, status: ContactStatus): Promise<void> {
+  await updateDoc(doc(db, CONTACT_COLLECTION, id), { status })
+}
+
+export async function deleteContactMessage(id: string): Promise<void> {
+  await deleteDoc(doc(db, CONTACT_COLLECTION, id))
 }

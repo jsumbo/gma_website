@@ -1,13 +1,25 @@
 "use client"
 
 import Link from "next/link"
+import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { FileText, Users, Home, LogOut, Mail, Sparkles, UserCircle, X } from "lucide-react"
+import { FileText, Users, Home, LogOut, Mail, Sparkles, UserCircle, X, Inbox } from "lucide-react"
 import { logOut } from "@/lib/auth"
+import { countNewContactMessages } from "@/lib/firestore"
+import { MESSAGES_CHANGED_EVENT } from "@/lib/contact"
 
 export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname()
   const router = useRouter()
+
+  // Unread contact-form messages, shown as a badge on the Messages link.
+  const [unread, setUnread] = useState(0)
+  useEffect(() => {
+    const refresh = () => countNewContactMessages().then(setUnread).catch(() => {})
+    refresh()
+    window.addEventListener(MESSAGES_CHANGED_EVENT, refresh)
+    return () => window.removeEventListener(MESSAGES_CHANGED_EVENT, refresh)
+  }, [pathname])
 
   const handleLogout = async () => {
     await logOut()
@@ -84,6 +96,30 @@ export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => 
             >
               <UserCircle className="h-4 w-4 shrink-0" />
               Team
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/gsa/messages"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all"
+              style={pathname.startsWith("/gsa/messages")
+                ? { backgroundColor: "#fee11b", color: "#01255f" }
+                : { color: "rgba(255,255,255,0.65)" }
+              }
+            >
+              <Inbox className="h-4 w-4 shrink-0" />
+              Messages
+              {unread > 0 && (
+                <span
+                  className="ml-auto rounded-full px-2 py-0.5 text-[0.65rem] font-bold"
+                  style={pathname.startsWith("/gsa/messages")
+                    ? { backgroundColor: "#01255f", color: "#fee11b" }
+                    : { backgroundColor: "#fee11b", color: "#01255f" }
+                  }
+                >
+                  {unread}
+                </span>
+              )}
             </Link>
           </li>
         </ul>
