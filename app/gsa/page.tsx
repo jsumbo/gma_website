@@ -3,27 +3,15 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import {
-  FileText,
-  Plus,
-  Edit,
-  Trash2,
-  MoreHorizontal,
-  Lock,
-  Star,
-} from "lucide-react"
+import { FileText, Plus, Lock, Star } from "lucide-react"
 import { getBlogPosts, deleteBlogPost } from "@/lib/firestore"
 import type { BlogPost } from "@/lib/data"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { AdminShell } from "@/components/admin-shell"
+import { AdminManageMenu } from "@/components/admin-manage-menu"
 import { signIn, useAdminUser } from "@/lib/auth"
 import { toast } from "sonner"
+import { useConfirm } from "@/components/confirm-dialog"
 
 function LoginForm() {
   const [email, setEmail] = useState("")
@@ -147,8 +135,10 @@ function BlogDashboard() {
     loadPosts()
   }, [])
 
+  const confirm = useConfirm()
+
   const handleDelete = async (post: BlogPost) => {
-    if (!confirm(`Delete "${post.title}"? This cannot be undone.`)) return
+    if (!(await confirm({ title: `Delete "${post.title}"?` }))) return
     try {
       await deleteBlogPost(post.id)
       setPosts((prev) => prev.filter((p) => p.id !== post.id))
@@ -194,114 +184,68 @@ function BlogDashboard() {
               </Link>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-border bg-background">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border bg-muted/50">
-                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                      Post
-                    </th>
-                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                      Category
-                    </th>
-                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                      Date
-                    </th>
-                    <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                      Featured
-                    </th>
-                    <th className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {posts.map((post) => (
-                    <tr key={post.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-4">
-                          <div className="relative w-16 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
-                            <Image
-                              src={post.featuredImage}
-                              alt={post.title}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="min-w-0">
-                            <h3 className="font-medium text-sm truncate max-w-xs">
-                              {post.title}
-                            </h3>
-                            <p className="text-xs text-muted-foreground truncate max-w-xs">
-                              {post.excerpt}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-foreground">
-                          {post.category}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        {post.featured ? (
-                          <span className="inline-flex items-center gap-1 text-xs font-medium" style={{ color: "#fee11b" }}>
-                            <Star className="h-3.5 w-3.5 fill-current" />
-                            Featured
-                          </span>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">—</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Open menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem asChild>
-                              <Link href={`/blog/${post.slug}`} className="flex items-center gap-2">
-                                <FileText className="h-4 w-4" />
-                                View
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link href={`/gsa/edit/${post.id}`} className="flex items-center gap-2">
-                                <Edit className="h-4 w-4" />
-                                Edit
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-destructive flex items-center gap-2"
-                              onClick={() => handleDelete(post)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {posts.map((post) => (
+                <BlogPostCard key={post.id} post={post} onDelete={() => handleDelete(post)} />
+              ))}
             </div>
           )}
         </div>
       </main>
     </AdminShell>
+  )
+}
+
+function BlogPostCard({ post, onDelete }: { post: BlogPost; onDelete: () => void }) {
+  return (
+    <div className="flex flex-col overflow-hidden rounded-lg border border-border bg-background">
+      <div className="relative aspect-video bg-muted">
+        {post.featuredImage && (
+          <Image
+            src={post.featuredImage}
+            alt={post.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover"
+          />
+        )}
+        <div className="absolute left-3 top-3 flex gap-2">
+          {post.category && (
+            <span className="inline-flex items-center rounded-full bg-background/90 px-2.5 py-0.5 text-xs font-medium">
+              {post.category}
+            </span>
+          )}
+          {post.featured && (
+            <span
+              className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
+              style={{ backgroundColor: "#fee11b", color: "#01255f" }}
+            >
+              <Star className="h-3 w-3 fill-current" />
+              Featured
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-1 flex-col p-5">
+        <p className="text-xs text-muted-foreground">
+          {post.publishedAt
+            ? new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+            : "Draft"}
+        </p>
+        <h3 className="mt-1 font-semibold leading-snug line-clamp-2">{post.title}</h3>
+        {post.excerpt && <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{post.excerpt}</p>}
+
+        <div className="mt-auto pt-5">
+          <AdminManageMenu
+            editHref={`/gsa/edit/${post.id}`}
+            viewPath={`/blog/${post.slug}`}
+            shareText={post.title}
+            onDelete={onDelete}
+          />
+        </div>
+      </div>
+    </div>
   )
 }
 

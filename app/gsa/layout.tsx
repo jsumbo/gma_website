@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { ConfirmDialogProvider } from "@/components/confirm-dialog"
 
 export const metadata: Metadata = {
   title: "Admin Panel | Management Agency",
@@ -13,7 +14,7 @@ export default function AdminLayout({
 }) {
   return (
     <div className="min-h-screen bg-muted/30">
-      {children}
+      <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
     </div>
   )
 }

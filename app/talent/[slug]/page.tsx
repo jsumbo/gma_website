@@ -8,6 +8,7 @@ import { getAthleteBySlug } from "@/lib/firestore-server"
 import { athletes as staticAthletes } from "@/lib/data"
 import { AthleteMedia } from "./athlete-media"
 import type { Metadata } from "next"
+import { SITE_URL } from "@/lib/site"
 
 export const revalidate = 60
 
@@ -88,7 +89,7 @@ export default async function AthletePage({ params }: AthletePageProps) {
     jobTitle: athlete.position,
     nationality: athlete.nationality,
     birthDate: athlete.dateOfBirth,
-    image: `https://gayduosa.org${athlete.image}`,
+    image: `${SITE_URL}${athlete.image}`,
     description: athlete.biography.split("\n\n")[0],
     worksFor: {
       "@type": "SportsTeam",
@@ -97,9 +98,9 @@ export default async function AthletePage({ params }: AthletePageProps) {
     affiliation: {
       "@type": "Organization",
       name: "Gayduo Management Agency",
-      url: "https://gayduosa.org",
+      url: SITE_URL,
     },
-    url: `https://gayduosa.org/talent/${athlete.slug}`,
+    url: `${SITE_URL}/talent/${athlete.slug}`,
     sameAs: [
       athlete.socialLinks.instagram,
       athlete.socialLinks.twitter,

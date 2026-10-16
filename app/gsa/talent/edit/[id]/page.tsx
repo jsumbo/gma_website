@@ -11,6 +11,7 @@ import { getAthleteById, updateAthlete, deleteAthlete } from "@/lib/firestore"
 import { uploadImage, uploadMany } from "@/lib/storage"
 import type { TalentArea } from "@/lib/data"
 import { toast } from "sonner"
+import { useConfirm } from "@/components/confirm-dialog"
 
 const POSITIONS = [
   "Goalkeeper", "Right Back", "Center Back", "Left Back",
@@ -285,8 +286,10 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
     }
   }
 
+  const confirm = useConfirm()
+
   const handleDelete = async () => {
-    if (!confirm(`Remove ${athleteName} from the roster? This cannot be undone.`)) return
+    if (!(await confirm({ title: `Remove ${athleteName} from the roster?`, confirmLabel: "Remove" }))) return
     try {
       await deleteAthlete(id)
       toast.success("Athlete removed from roster")

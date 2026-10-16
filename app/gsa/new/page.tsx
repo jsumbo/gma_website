@@ -12,6 +12,7 @@ import { createBlogPost } from "@/lib/firestore"
 import { uploadImage } from "@/lib/storage"
 import { categories } from "@/lib/data"
 import { toast } from "sonner"
+import { SITE_DOMAIN } from "@/lib/site"
 
 export default function NewPostPage() {
   return (
@@ -290,7 +291,7 @@ function NewPostContent() {
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Search Preview</p>
                 <div className="space-y-1">
                   <p className="text-blue-600 text-lg truncate">{(seoTitle || title || "Post Title") + " | Gayduo Management Agency"}</p>
-                  <p className="text-green-700 text-sm truncate">gayduosa.com/blog/{slug || "post-url"}</p>
+                  <p className="text-green-700 text-sm truncate">{SITE_DOMAIN}/blog/{slug || "post-url"}</p>
                   <p className="text-sm text-muted-foreground line-clamp-2">
                     {seoDescription || excerpt || "Your meta description will appear here."}
                   </p>

@@ -12,6 +12,8 @@ import { getBlogPostById, updateBlogPost, deleteBlogPost } from "@/lib/firestore
 import { uploadImage } from "@/lib/storage"
 import { categories } from "@/lib/data"
 import { toast } from "sonner"
+import { SITE_DOMAIN } from "@/lib/site"
+import { useConfirm } from "@/components/confirm-dialog"
 
 interface EditPostPageProps {
   params: Promise<{ id: string }>
@@ -102,8 +104,10 @@ function EditPostContent({ params }: EditPostPageProps) {
     }
   }
 
+  const confirm = useConfirm()
+
   const handleDelete = async () => {
-    if (!confirm("Delete this post? This cannot be undone.")) return
+    if (!(await confirm({ title: "Delete this post?" }))) return
     try {
       await deleteBlogPost(id)
       toast.success("Post deleted")
@@ -310,7 +314,7 @@ function EditPostContent({ params }: EditPostPageProps) {
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Search Preview</p>
                 <div className="space-y-1">
                   <p className="text-blue-600 text-lg truncate">{seoTitle || title}</p>
-                  <p className="text-green-700 text-sm truncate">gayduosa.com/blog/{slug}</p>
+                  <p className="text-green-700 text-sm truncate">{SITE_DOMAIN}/blog/{slug}</p>
                   <p className="text-sm text-muted-foreground line-clamp-2">{seoDescription || excerpt}</p>
                 </div>
               </div>

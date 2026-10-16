@@ -3,6 +3,7 @@ import { Staatliches, Inter, Barlow_Condensed, DM_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import './globals.css'
+import { SITE_URL } from "@/lib/site"
 
 // Isometra and Anton (tried first) didn't match the tall, flat-edged stencil look the
 // reference site uses. Staatliches is the closest free equivalent — it's the --font-display
@@ -40,7 +41,6 @@ const SITE_NAME = "Gayduo Management Agency"
 const SITE_TAGLINE = "Talent Management & Brand Partnerships"
 const SITE_DESCRIPTION =
   "Gayduo Management Agency connects talent with brands. We represent individuals across sports, lifestyle, and campus culture — including footballers and basketball players — and build the commercial partnerships that deliver value for both sides."
-const SITE_URL = "https://gayduosa.org"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

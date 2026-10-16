@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next"
 import { getAthletes, getBlogPosts } from "@/lib/firestore-server"
 import { athletes as staticAthletes, blogPosts as staticBlogPosts } from "@/lib/data"
+import { SITE_URL } from "@/lib/site"
 
-const BASE = "https://gayduosa.org"
+const BASE = SITE_URL
 
 // A previous version of this file read static placeholder data instead of the live roster/blog
 // (see git history: "Fix sitemap — use static data instead of Firebase to avoid server crash").

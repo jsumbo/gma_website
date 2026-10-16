@@ -314,18 +314,6 @@ async function seed() {
     console.log(`  ${member.name}`)
   }
 
-  const adminUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME
-  const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD
-  if (adminUsername && adminPassword) {
-    await setDoc(doc(db, "adminConfig", "credentials"), {
-      username: adminUsername,
-      password: adminPassword,
-    })
-    console.log("\nAdmin credentials stored.")
-  } else {
-    console.log("\nSkipping admin credentials — NEXT_PUBLIC_ADMIN_USERNAME / NEXT_PUBLIC_ADMIN_PASSWORD not set in .env.local")
-  }
-
   console.log("\nDone.")
   process.exit(0)
 }

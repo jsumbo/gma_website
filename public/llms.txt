@@ -4,18 +4,18 @@
 
 ## About
 
-- [Who We Are](https://gayduosa.org/about): Our mission, approach, and positioning as a talent management agency.
-- [Services](https://gayduosa.org/services): Contract negotiation, transfer guidance, commercial deals, media & broadcast, social strategy, public relations, content production, and philanthropy.
-- [Our Team](https://gayduosa.org/team): The management team behind the agency.
-- [Contact](https://gayduosa.org/contact): Get in touch for representation, partnership, brand, or media inquiries.
+- [Who We Are](https://gayduoma.com/about): Our mission, approach, and positioning as a talent management agency.
+- [Services](https://gayduoma.com/services): Contract negotiation, transfer guidance, commercial deals, media & broadcast, social strategy, public relations, content production, and philanthropy.
+- [Our Team](https://gayduoma.com/team): The management team behind the agency.
+- [Contact](https://gayduoma.com/contact): Get in touch for representation, partnership, brand, or media inquiries.
 
 ## Talent
 
-- [Athletes](https://gayduosa.org/athletes): The roster of athletes we represent, with individual profiles, stats, and career history.
+- [Athletes](https://gayduoma.com/talent): The roster of athletes we represent, with individual profiles, stats, and career history.
 
 ## News
 
-- [Blog](https://gayduosa.org/blog): News, transfers, and features on our athletes and the agency.
+- [Blog](https://gayduoma.com/blog): News, transfers, and features on our athletes and the agency.
 
 ## Offices
 

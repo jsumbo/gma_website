@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { AdminShell } from "@/components/admin-shell"
 import { toast } from "sonner"
+import { useConfirm } from "@/components/confirm-dialog"
 
 export default function ServicesAdminPage() {
   return (
@@ -43,8 +44,10 @@ function ServicesContent() {
     load()
   }, [])
 
+  const confirm = useConfirm()
+
   const handleDelete = async (service: Service) => {
-    if (!confirm(`Delete "${service.title.join(" ")}"? This cannot be undone.`)) return
+    if (!(await confirm({ title: `Delete "${service.title.join(" ")}"?` }))) return
     try {
       await deleteService(service.id)
       setItems((prev) => prev.filter((s) => s.id !== service.id))

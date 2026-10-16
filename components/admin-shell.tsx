@@ -5,9 +5,10 @@ import { usePathname, useRouter } from "next/navigation"
 import { Menu } from "lucide-react"
 import { AdminSidebar } from "./admin-sidebar"
 import { useAdminUser } from "@/lib/auth"
+import { NotAdminNotice } from "./not-admin-notice"
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAdminUser()
+  const { user, isAdmin, loading } = useAdminUser()
   const [menuOpen, setMenuOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
@@ -29,6 +30,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) return null
+  if (!isAdmin) return <NotAdminNotice user={user} />
 
   return (
     <div className="min-h-screen">

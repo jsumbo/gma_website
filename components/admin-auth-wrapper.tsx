@@ -3,9 +3,10 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAdminUser } from "@/lib/auth"
+import { NotAdminNotice } from "./not-admin-notice"
 
 export function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAdminUser()
+  const { user, isAdmin, loading } = useAdminUser()
   const router = useRouter()
 
   useEffect(() => {
@@ -22,6 +23,10 @@ export function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
 
   if (!user) {
     return null
+  }
+
+  if (!isAdmin) {
+    return <NotAdminNotice user={user} />
   }
 
   return <>{children}</>

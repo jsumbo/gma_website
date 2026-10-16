@@ -4,6 +4,7 @@ import path from "node:path"
 import sharp from "sharp"
 import { getAthleteBySlug } from "@/lib/firestore-server"
 import { athletes as staticAthletes } from "@/lib/data"
+import { SITE_DOMAIN } from "@/lib/site"
 
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
@@ -180,7 +181,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
               marginTop: 32,
             }}
           >
-            Gayduo Management Agency · gayduosa.org
+            Gayduo Management Agency · {SITE_DOMAIN}
           </div>
         </div>
       </div>

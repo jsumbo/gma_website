@@ -7,6 +7,7 @@ import { getBlogPostBySlug, getBlogPosts } from "@/lib/firestore-server"
 import { blogPosts as staticBlogPosts } from "@/lib/data"
 import { ArrowLeft } from "lucide-react"
 import type { Metadata } from "next"
+import { SITE_URL } from "@/lib/site"
 
 export const revalidate = 60
 
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   const ogImage = post.featuredImage.startsWith("http")
     ? post.featuredImage
-    : `https://gayduosa.org${post.featuredImage}`
+    : `${SITE_URL}${post.featuredImage}`
 
   // The root layout's title template already appends "| Gayduo Management Agency" to every
   // page title. Older posts (created before that template existed) may have it baked directly
@@ -73,7 +74,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const postImage = post.featuredImage.startsWith("http")
     ? post.featuredImage
-    : `https://gayduosa.org${post.featuredImage}`
+    : `${SITE_URL}${post.featuredImage}`
 
   // BlogPosting structured data — this is what lets Google's rich results and AI answer
   // engines (Search Generative Experience, ChatGPT, Perplexity, etc.) actually parse this as
@@ -86,13 +87,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     image: [postImage],
     datePublished: post.publishedAt,
     dateModified: post.publishedAt,
-    author: { "@type": "Organization", name: post.author, url: "https://gayduosa.org" },
+    author: { "@type": "Organization", name: post.author, url: SITE_URL },
     publisher: {
       "@type": "Organization",
       name: "Gayduo Management Agency",
-      logo: { "@type": "ImageObject", url: "https://gayduosa.org/Web_Logo.svg" },
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/Web_Logo.svg` },
     },
-    mainEntityOfPage: { "@type": "WebPage", "@id": `https://gayduosa.org/blog/${post.slug}` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${post.slug}` },
     keywords: post.seoKeywords?.join(", "),
     articleSection: post.category,
   }

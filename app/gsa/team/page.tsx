@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { AdminShell } from "@/components/admin-shell"
 import { toast } from "sonner"
+import { useConfirm } from "@/components/confirm-dialog"
 
 export default function TeamAdminPage() {
   return (
@@ -43,8 +44,10 @@ function TeamContent() {
     load()
   }, [])
 
+  const confirm = useConfirm()
+
   const handleDelete = async (member: TeamMember) => {
-    if (!confirm(`Remove ${member.name} from the team page? This cannot be undone.`)) return
+    if (!(await confirm({ title: `Remove ${member.name} from the team page?`, confirmLabel: "Remove" }))) return
     try {
       await deleteTeamMember(member.id)
       setItems((prev) => prev.filter((m) => m.id !== member.id))

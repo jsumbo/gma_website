@@ -3,18 +3,14 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Plus, Edit, Trash2, MoreHorizontal, Users } from "lucide-react"
+import { Plus, Users } from "lucide-react"
 import { getAthletes, deleteAthlete } from "@/lib/firestore"
 import type { Athlete } from "@/lib/data"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { AdminShell } from "@/components/admin-shell"
+import { AdminManageMenu } from "@/components/admin-manage-menu"
 import { toast } from "sonner"
+import { useConfirm } from "@/components/confirm-dialog"
 
 export default function TalentAdminPage() {
   return (
@@ -43,8 +39,10 @@ function TalentContent() {
     loadRoster()
   }, [])
 
+  const confirm = useConfirm()
+
   const handleDelete = async (person: Athlete) => {
-    if (!confirm(`Remove ${person.name} from the roster? This cannot be undone.`)) return
+    if (!(await confirm({ title: `Remove ${person.name} from the roster?`, confirmLabel: "Remove" }))) return
     try {
       await deleteAthlete(person.id)
       setRoster((prev) => prev.filter((a) => a.id !== person.id))
@@ -91,120 +89,63 @@ function TalentContent() {
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-border bg-background">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Talent
-                  </th>
-                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Area
-                  </th>
-                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Position
-                  </th>
-                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Club
-                  </th>
-                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Nationality
-                  </th>
-                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Stats
-                  </th>
-                  <th className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-4">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {roster.map((person) => {
-                  const area = person.area ?? "Athlete"
-                  const isAthlete = area === "Athlete"
-                  return (
-                    <tr key={person.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-4">
-                          <div className="relative w-12 h-12 bg-muted rounded-full overflow-hidden flex-shrink-0">
-                            <Image
-                              src={person.image}
-                              alt={person.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <div>
-                            <p className="font-semibold text-sm">{person.name}</p>
-                            {isAthlete && <p className="text-xs text-muted-foreground">#{person.number}</p>}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-foreground">
-                          {area}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="text-sm text-muted-foreground">{isAthlete ? (person.position || "—") : "—"}</p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="text-sm">{isAthlete ? (person.team || "—") : "—"}</p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="text-sm text-muted-foreground">{isAthlete ? (person.nationality || "—") : "—"}</p>
-                      </td>
-                      <td className="px-6 py-4">
-                        {isAthlete ? (
-                          <div className="flex gap-4 text-xs text-muted-foreground">
-                            <span><strong className="text-foreground">{person.stats.goals}</strong> G</span>
-                            <span><strong className="text-foreground">{person.stats.assists}</strong> A</span>
-                            <span><strong className="text-foreground">{person.stats.appearances}</strong> Apps</span>
-                          </div>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">—</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Open menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            {isAthlete && (
-                              <DropdownMenuItem asChild>
-                                <Link href={`/talent/${person.slug}`} className="flex items-center gap-2">
-                                  <Users className="h-4 w-4" />
-                                  View Profile
-                                </Link>
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuItem asChild>
-                              <Link href={`/gsa/talent/edit/${person.id}`} className="flex items-center gap-2">
-                                <Edit className="h-4 w-4" />
-                                Edit
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-destructive flex items-center gap-2"
-                              onClick={() => handleDelete(person)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {roster.map((person) => (
+              <TalentCard key={person.id} person={person} onDelete={() => handleDelete(person)} />
+            ))}
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+function TalentCard({ person, onDelete }: { person: Athlete; onDelete: () => void }) {
+  const area = person.area ?? "Athlete"
+  const isAthlete = area === "Athlete"
+
+  return (
+    <div className="flex flex-col overflow-hidden rounded-lg border border-border bg-background">
+      <div className="relative aspect-4/5 bg-muted">
+        {person.image && (
+          <Image
+            src={person.image}
+            alt={person.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover object-top"
+          />
+        )}
+        <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-background/90 px-2.5 py-0.5 text-xs font-medium">
+          {area}
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-semibold">{person.name}</h3>
+        {isAthlete && (
+          <>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {[person.position, person.team].filter(Boolean).join(" · ") || "—"}
+            </p>
+            {person.nationality && <p className="text-sm text-muted-foreground">{person.nationality}</p>}
+            <div className="mt-3 flex gap-4 text-xs text-muted-foreground">
+              <span><strong className="text-foreground">{person.stats.goals}</strong> G</span>
+              <span><strong className="text-foreground">{person.stats.assists}</strong> A</span>
+              <span><strong className="text-foreground">{person.stats.appearances}</strong> Apps</span>
+            </div>
+          </>
+        )}
+
+        <div className="mt-auto pt-5">
+          <AdminManageMenu
+            editHref={`/gsa/talent/edit/${person.id}`}
+            // Only athletes have their own profile page; creators and models appear on the /talent roster.
+            viewPath={isAthlete ? `/talent/${person.slug}` : "/talent"}
+            shareText={isAthlete ? `${person.name}, ${person.position} at ${person.team}` : person.name}
+            onDelete={onDelete}
+          />
+        </div>
       </div>
     </div>
   )
