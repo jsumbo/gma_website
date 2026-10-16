@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     creator: "@gayduosa",
   },
-  icons: { icon: "/Favicon.svg", shortcut: "/Favicon.svg" },
+  // Icons come from app/favicon.ico, app/icon.png and app/apple-icon.png (Next file conventions).
   robots: {
     index: true,
     follow: true,
