@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server"
 import nodemailer from "nodemailer"
 import { z } from "zod"
+import { CONTACT_COLLECTION, CONTACT_SUBJECTS } from "@/lib/contact"
 
 const SITE_EMAIL = "info@gayduoma.com"
 const SITE_NAME = "Gayduo Management Agency"
 
-const SUBJECTS = {
-  representation: "Talent Representation",
-  partnership: "Club / Partnership Inquiry",
-  brand: "Brand & Sponsorship",
-  media: "Media Request",
-  other: "Other",
-} as const
+const SUBJECTS = CONTACT_SUBJECTS
 
 const schema = z.object({
   firstName: z.string().trim().min(1).max(80),
@@ -38,6 +33,41 @@ function tooMany(ip: string) {
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!)
+
+// Saves the enquiry to Firestore over REST. Firestore rules allow public *create* on this collection
+// only with exactly these fields and size limits (see firestore.rules); only admins can read it.
+async function saveMessage(data: z.infer<typeof schema>): Promise<boolean> {
+  const project = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+  const key = process.env.NEXT_PUBLIC_FIREBASE_API_KEY
+  if (!project || !key) return false
+  const str = (v: string) => ({ stringValue: v })
+  try {
+    const res = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${project}/databases/(default)/documents/${CONTACT_COLLECTION}?key=${key}`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          fields: {
+            firstName: str(data.firstName),
+            lastName: str(data.lastName),
+            email: str(data.email),
+            subject: str(data.subject),
+            message: str(data.message),
+            status: str("new"),
+            createdAt: { timestampValue: new Date().toISOString() },
+          },
+        }),
+        signal: AbortSignal.timeout(8000),
+      }
+    )
+    if (!res.ok) console.error("[contact] Firestore save failed:", res.status, await res.text())
+    return res.ok
+  } catch (err) {
+    console.error("[contact] Firestore save failed:", err)
+    return false
+  }
+}
 
 export async function POST(req: Request) {
   let body: unknown
@@ -72,13 +102,16 @@ export async function POST(req: Request) {
     html: `<p><strong>${esc(label)}</strong></p><p>From: ${esc(fullName)} &lt;${esc(data.email)}&gt;</p><p style="white-space:pre-wrap">${esc(data.message)}</p>`,
   }
 
+  const saved = await saveMessage(data)
+
+  // Email is a bonus notification; the saved message in the admin panel is the record.
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
-    // No mail server configured. In dev, print the message so the flow can be tested; in production, fail loudly.
+    if (saved) return NextResponse.json({ ok: true })
     if (process.env.NODE_ENV !== "production") {
-      console.log("[contact] SMTP not configured — message NOT sent:\n", mail.text)
+      console.log("[contact] Not saved and SMTP not configured — message NOT delivered:\n", mail.text)
       return NextResponse.json({ ok: true, dev: true })
     }
-    console.error("[contact] SMTP_HOST / SMTP_USER / SMTP_PASS are not set; enquiry was dropped.")
+    console.error("[contact] Could not save and SMTP is not configured; enquiry was dropped.")
     return NextResponse.json({ error: "Our contact form is temporarily unavailable." }, { status: 503 })
   }
 
@@ -94,6 +127,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error("[contact] send failed:", err)
+    if (saved) return NextResponse.json({ ok: true })
     return NextResponse.json({ error: "We couldn't send your message. Please try again or email us directly." }, { status: 502 })
   }
 }

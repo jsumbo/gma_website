@@ -35,6 +35,22 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Contact form submissions. The website's /api/contact route creates them (after its own validation
+    // and spam checks); the rules re-check the shape so nothing else can be written here. Admin-only reads.
+    match /contactMessages/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['firstName', 'lastName', 'email', 'subject', 'message', 'status', 'createdAt'])
+        && request.resource.data.firstName is string && request.resource.data.firstName.size() > 0 && request.resource.data.firstName.size() <= 80
+        && request.resource.data.lastName is string && request.resource.data.lastName.size() > 0 && request.resource.data.lastName.size() <= 80
+        && request.resource.data.email is string && request.resource.data.email.size() <= 200 && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+        && request.resource.data.subject in ['representation', 'partnership', 'brand', 'media', 'other']
+        && request.resource.data.message is string && request.resource.data.message.size() >= 10 && request.resource.data.message.size() <= 5000
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.createdAt > request.time - duration.value(5, 'm')
+        && request.resource.data.createdAt < request.time + duration.value(5, 'm');
+      allow read, update, delete: if isAdmin();
+    }
+
     // Anything not listed above is denied by default.
   }
 }
