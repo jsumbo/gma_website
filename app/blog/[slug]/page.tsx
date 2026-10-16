@@ -174,7 +174,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <section className="py-16 lg:py-24 px-6 lg:px-8 bg-muted/50 border-t border-border">
             <div className="mx-auto max-w-7xl">
               <h2 className="text-2xl font-bold tracking-tight mb-8" style={{ color: "#01255f" }}>
-                More Articles
+                More Stories
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {relatedPosts.map((relatedPost) => (
