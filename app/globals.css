@@ -163,3 +163,47 @@
   font-family: var(--font-inter), 'Inter', sans-serif;
   letter-spacing: normal;
 }
+
+/* Blog post body — used by the admin rich text editor and the published post so they match.
+   (The old `prose` classes did nothing: @tailwindcss/typography isn't installed, so links, headings
+   and lists rendered unstyled.) */
+.rich-content { line-height: 1.75; }
+.rich-content > * + * { margin-top: 1em; }
+.rich-content h1, .rich-content h2, .rich-content h3 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #01255f;
+  margin-top: 1.6em;
+}
+.rich-content h1 { font-size: 2em; }
+.rich-content h2 { font-size: 1.6em; }
+.rich-content h3 { font-size: 1.3em; }
+.rich-content a {
+  color: #01255f;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: #fee11b;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.rich-content a:hover { text-decoration-color: #01255f; }
+.rich-content ul { list-style: disc; padding-left: 1.5em; }
+.rich-content ol { list-style: decimal; padding-left: 1.5em; }
+.rich-content li + li { margin-top: 0.35em; }
+.rich-content blockquote {
+  border-left: 4px solid #fee11b;
+  padding-left: 1em;
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+.rich-content pre {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--muted);
+  padding: 1em;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+.rich-content img { max-width: 100%; height: auto; border-radius: 0.5rem; }
+.rich-content-lg { font-size: 1.125rem; }

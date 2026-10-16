@@ -162,7 +162,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <section className="px-6 lg:px-8 pb-16 lg:pb-24">
             <div className="mx-auto max-w-3xl">
               <div
-                className="prose prose-lg prose-neutral max-w-none"
+                className="rich-content rich-content-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
             </div>
