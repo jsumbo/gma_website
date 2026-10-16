@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Staatliches, Inter, Barlow_Condensed, DM_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { Toaster } from 'sonner'
 import './globals.css'
 import { SITE_URL } from "@/lib/site"
 
@@ -22,13 +21,18 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
+  // Not needed for first paint (nav links); skipping the preload frees bandwidth for Staatliches,
+  // the hero headline font that Lighthouse measures as the Largest Contentful Paint.
+  preload: false,
 })
 
 const barlowCondensed = Barlow_Condensed({
-  weight: ['400', '500', '600', '700', '800', '900'],
+  // Only 400–700 are used (font-medium/semibold/bold); 800/900 were six extra downloads.
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
   variable: '--font-barlow',
   display: 'swap',
+  preload: false,
 })
 
 const dmSans = DM_Sans({
@@ -118,7 +122,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         {children}
-        <Toaster position="bottom-right" richColors />
         <Analytics />
       </body>
     </html>

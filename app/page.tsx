@@ -24,12 +24,15 @@ export default async function HomePage() {
           style={{ backgroundColor: "#01255f" }}
         >
           {/* Background photo + navy overlay for legibility */}
+          {/* Not `priority`: the photo sits under an ~88% navy overlay, so it shouldn't compete with
+              the headline (the LCP element) for bandwidth on first load. Low quality is invisible here. */}
           <Image
             src="/image.png"
             alt=""
             fill
-            priority
             sizes="100vw"
+            quality={50}
+            fetchPriority="low"
             className="object-cover object-[center_30%]"
           />
           <div

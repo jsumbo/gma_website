@@ -80,7 +80,7 @@ export function Header() {
         {/* Mobile: logo left, menu button right */}
         <div className="flex w-full items-center justify-between lg:hidden">
           <Link href="/" className="flex shrink-0 items-center">
-            <Image src="/logo-header.png" alt="Gayduo Management Agency" width={563} height={176} className="h-9 w-auto rounded-sm" priority />
+            <Image src="/logo-header.png" alt="Gayduo Management Agency" width={115} height={36} className="h-9 w-auto rounded-sm" />
           </Link>
           <button
             type="button"
@@ -101,7 +101,7 @@ export function Header() {
           </div>
 
           <Link href="/" className="absolute left-1/2 flex -translate-x-1/2 items-center">
-            <Image src="/logo-header.png" alt="Gayduo Management Agency" width={563} height={176} className="h-11 w-auto rounded-sm" priority />
+            <Image src="/logo-header.png" alt="Gayduo Management Agency" width={141} height={44} className="h-11 w-auto rounded-sm" />
           </Link>
 
           <div className="flex items-center gap-12">

@@ -89,7 +89,7 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="px-7 sm:px-12 lg:px-16 xl:px-24">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 pb-6 pt-3 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p className="font-heading text-[0.65rem] font-medium uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+          <p className="font-heading text-[0.65rem] font-medium uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.6)" }}>
             &copy; {new Date().getFullYear()} — Gayduo Management Agency
           </p>
 
@@ -99,14 +99,14 @@ export function Footer() {
                 key={item.name}
                 href={item.href}
                 className="font-heading text-[0.65rem] font-medium uppercase tracking-widest transition-colors hover:text-white"
-                style={{ color: "rgba(255,255,255,0.4)" }}
+                style={{ color: "rgba(255,255,255,0.6)" }}
               >
                 {item.name}
               </Link>
             ))}
           </nav>
 
-          <p className="font-heading text-[0.65rem] font-medium uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+          <p className="font-heading text-[0.65rem] font-medium uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.6)" }}>
             {offices.map((o) => o.city).join(" · ")}
           </p>
         </div>
