@@ -114,7 +114,7 @@ export default async function HomePage() {
                       alt="One of our represented athletes"
                       fill
                       sizes="(max-width: 1024px) 0px, 33vw"
-                      className="object-cover grayscale"
+                      className="object-cover object-top"
                     />
                     <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(1,37,95,0.85), rgba(1,37,95,0.1) 55%)" }} />
                   </div>

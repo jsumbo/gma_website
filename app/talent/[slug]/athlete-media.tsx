@@ -136,7 +136,7 @@ export function AthleteMedia({ gallery, highlightVideo, highlightVideos, athlete
                     alt={videos[0].label ?? `${athleteName} highlights`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 80vw"
-                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
                   <div className="absolute inset-0 bg-neutral-900" />
@@ -171,7 +171,7 @@ export function AthleteMedia({ gallery, highlightVideo, highlightVideos, athlete
                           alt={video.label ?? `${athleteName} video ${i + 1}`}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
