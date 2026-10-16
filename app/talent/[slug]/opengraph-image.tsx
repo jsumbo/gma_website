@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import sharp from "sharp"
-import { getAthleteBySlug } from "@/lib/firestore"
+import { getAthleteBySlug } from "@/lib/firestore-server"
 import { athletes as staticAthletes } from "@/lib/data"
 
 export const size = { width: 1200, height: 630 }

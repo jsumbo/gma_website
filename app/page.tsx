@@ -3,11 +3,11 @@ import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BlogCard } from "@/components/blog-card"
-import { getFeaturedBlogPosts } from "@/lib/firestore"
+import { getFeaturedBlogPosts } from "@/lib/firestore-server"
 import { blogPosts as staticBlogPosts } from "@/lib/data"
 import { ArrowRight, ArrowDown } from "lucide-react"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
 
 export default async function HomePage() {
   const featuredPosts = await getFeaturedBlogPosts().catch(() => staticBlogPosts.slice(0, 3))
@@ -110,7 +110,7 @@ export default async function HomePage() {
                 <div className="relative mx-auto hidden w-full max-w-sm lg:col-span-4 lg:block lg:max-w-none">
                   <div className="relative aspect-3/4 overflow-hidden" style={{ clipPath: "polygon(8% 0, 100% 0, 92% 100%, 0 100%)" }}>
                     <Image
-                      src="/athletes/alvin-martor.jpg"
+                      src="/IMG_0047.jpeg"
                       alt="One of our represented athletes"
                       fill
                       sizes="(max-width: 1024px) 0px, 33vw"

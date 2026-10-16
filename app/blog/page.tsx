@@ -1,11 +1,11 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BlogCard } from "@/components/blog-card"
-import { getBlogPosts } from "@/lib/firestore"
+import { getBlogPosts } from "@/lib/firestore-server"
 import { blogPosts as staticBlogPosts } from "@/lib/data"
 import type { Metadata } from "next"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: "Blog",

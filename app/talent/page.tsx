@@ -2,12 +2,12 @@ import Image from "next/image"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { getAthletes } from "@/lib/firestore"
+import { getAthletes } from "@/lib/firestore-server"
 import { athletes as staticAthletes } from "@/lib/data"
 import type { Metadata } from "next"
 import { ArrowRight } from "lucide-react"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: "Talent",

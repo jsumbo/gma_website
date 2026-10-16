@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// Paste into Firebase console → Firestore Database → Rules, then Publish.
+// Public site content is readable by anyone; only users listed in `admins` can change it.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // One doc per admin, keyed by their Firebase Auth UID. Managed only from the console.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /athletes/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /blogPosts/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /services/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /managementTeam/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Anything not listed above is denied by default.
+  }
+}

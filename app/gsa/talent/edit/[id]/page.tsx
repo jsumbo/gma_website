@@ -8,7 +8,7 @@ import { ArrowLeft, Plus, X, Upload, ChevronDown, Film } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AdminShell } from "@/components/admin-shell"
 import { getAthleteById, updateAthlete, deleteAthlete } from "@/lib/firestore"
-import { uploadImage } from "@/lib/storage"
+import { uploadImage, uploadMany } from "@/lib/storage"
 import type { TalentArea } from "@/lib/data"
 import { toast } from "sonner"
 
@@ -198,7 +198,9 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
       let imageUrl = mainImage || ""
       if (mainImageFile) {
         setSavingMsg("Uploading profile photo...")
-        imageUrl = await uploadImage(mainImageFile, `athletes/${slug}/profile_${ts}.${ext(mainImageFile)}`)
+        imageUrl = await uploadImage(mainImageFile, `athletes/${slug}/profile_${ts}.${ext(mainImageFile)}`, (f) =>
+          setSavingMsg(`Uploading profile photo... ${Math.round(f * 100)}%`)
+        )
       }
 
       if (!isAthlete) {
@@ -225,15 +227,16 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
         return
       }
 
-      const galleryUrls: string[] = []
-      for (let i = 0; i < gallery.length; i++) {
-        const file = galleryFiles[i]
-        if (file) {
-          setSavingMsg(`Uploading gallery file ${i + 1} of ${gallery.length}...`)
-          galleryUrls.push(await uploadImage(file, `athletes/${slug}/gallery_${ts}_${i}.${ext(file)}`))
-        } else {
-          galleryUrls.push(gallery[i])
-        }
+      // Existing entries keep their URL; new files are uploaded in parallel and slotted back into place.
+      const galleryUrls = [...gallery]
+      const galleryUploads = galleryFiles.flatMap((file, i) =>
+        file ? [{ i, file, path: `athletes/${slug}/gallery_${ts}_${i}.${ext(file)}` }] : []
+      )
+      if (galleryUploads.length) {
+        const urls = await uploadMany(galleryUploads, (done, percent) =>
+          setSavingMsg(`Uploading gallery: ${done} of ${galleryUploads.length} done (${percent}%)`)
+        )
+        galleryUploads.forEach((u, k) => { galleryUrls[u.i] = urls[k] })
       }
 
       const videoEntries = highlightVideos.filter((v) => v.url || v.file)
@@ -242,7 +245,10 @@ function EditAthleteContent({ params }: EditAthletePageProps) {
         const v = videoEntries[i]
         if (v.mode === "upload" && v.file) {
           setSavingMsg(`Uploading video${v.label ? ` "${v.label}"` : ` ${i + 1}`}...`)
-          const url = await uploadImage(v.file, `athletes/${slug}/highlight_${ts}_${i}.${ext(v.file)}`)
+          const label = v.label ? ` "${v.label}"` : ` ${i + 1}`
+          const url = await uploadImage(v.file, `athletes/${slug}/highlight_${ts}_${i}.${ext(v.file)}`, (f) =>
+            setSavingMsg(`Uploading video${label}... ${Math.round(f * 100)}%`)
+          )
           savedVideos.push({ url, ...(v.label ? { label: v.label } : {}) })
         } else {
           savedVideos.push({ url: toEmbedUrl(v.url), ...(v.label ? { label: v.label } : {}) })

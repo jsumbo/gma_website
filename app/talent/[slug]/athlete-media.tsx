@@ -12,6 +12,28 @@ interface AthleteMediaProps {
   athleteName: string
 }
 
+// The first request for each photo makes the server download the full-size original from Supabase
+// (some are 3–4 MB) before resizing it. On a slow connection one of several parallel requests can time
+// out, leaving a broken image. Retry a couple of times with a cache-busting param before giving up.
+function GalleryImage({ src, alt }: { src: string; alt: string }) {
+  const [attempt, setAttempt] = useState(0)
+  const retrySrc = attempt ? `${src}${src.includes("?") ? "&" : "?"}retry=${attempt}` : src
+  return (
+    <Image
+      key={attempt}
+      src={retrySrc}
+      alt={alt}
+      fill
+      // Start fetching as soon as the page loads rather than when scrolled into view —
+      // resized gallery images are small (~25–55 KB), so loading all of them up front is cheap.
+      loading="eager"
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+      onError={() => attempt < 2 && setTimeout(() => setAttempt((a) => a + 1), 1000 * (attempt + 1))}
+    />
+  )
+}
+
 function isVideoUrl(url: string) {
   return /\.(mp4|webm|mov|avi|m4v)(\?|$)/i.test(url)
 }
@@ -147,7 +169,7 @@ export function AthleteMedia({ gallery, highlightVideo, highlightVideos, athlete
                 return (
                   <div
                     key={index}
-                    className="relative aspect-[4/3] bg-neutral-900 cursor-pointer group overflow-hidden"
+                    className="relative aspect-3/4 bg-neutral-900 cursor-pointer group overflow-hidden"
                     onClick={() => isVid ? setActiveVideo(url) : setSelectedImage(url)}
                   >
                     {isVid ? (
@@ -155,13 +177,7 @@ export function AthleteMedia({ gallery, highlightVideo, highlightVideos, athlete
                         <Film className="h-10 w-10 text-white/20" />
                       </div>
                     ) : (
-                      <Image
-                        src={url}
-                        alt={`${athleteName} photo ${index + 1}`}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
-                      />
+                      <GalleryImage src={url} alt={`${athleteName} photo ${index + 1}`} />
                     )}
                     <div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"

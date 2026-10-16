@@ -1,24 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useAdminUser } from "@/lib/auth"
 
 export function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const { user, loading } = useAdminUser()
   const router = useRouter()
 
   useEffect(() => {
-    const auth = sessionStorage.getItem("gsa_auth")
-    if (auth === "true") {
-      setIsAuthenticated(true)
-    } else {
-      router.push("/gsa")
-    }
-    setIsLoading(false)
-  }, [router])
+    if (!loading && !user) router.push("/gsa")
+  }, [loading, user, router])
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-2 border-foreground border-t-transparent rounded-full" />
@@ -26,7 +20,7 @@ export function AdminAuthWrapper({ children }: { children: React.ReactNode }) {
     )
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return null
   }
 

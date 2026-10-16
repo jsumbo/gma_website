@@ -2,12 +2,12 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ServicesGrid } from "@/components/services-grid"
-import { getServices } from "@/lib/firestore"
+import { getServices } from "@/lib/firestore-server"
 import { services as staticServices } from "@/lib/services"
 import { ArrowRight } from "lucide-react"
 import type { Metadata } from "next"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: "Services",

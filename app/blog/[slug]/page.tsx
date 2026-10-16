@@ -3,12 +3,12 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { getBlogPostBySlug, getBlogPosts } from "@/lib/firestore"
+import { getBlogPostBySlug, getBlogPosts } from "@/lib/firestore-server"
 import { blogPosts as staticBlogPosts } from "@/lib/data"
 import { ArrowLeft } from "lucide-react"
 import type { Metadata } from "next"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>

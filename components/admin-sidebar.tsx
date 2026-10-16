@@ -3,13 +3,14 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { FileText, Users, Home, LogOut, Mail, Sparkles, UserCircle, X } from "lucide-react"
+import { logOut } from "@/lib/auth"
 
 export function AdminSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname()
   const router = useRouter()
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("gsa_auth")
+  const handleLogout = async () => {
+    await logOut()
     router.push("/gsa")
   }
 

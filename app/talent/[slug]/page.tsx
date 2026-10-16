@@ -4,12 +4,12 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, Instagram, Twitter, Facebook, Calendar, MapPin, Ruler, CircleDot } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { getAthleteBySlug } from "@/lib/firestore"
+import { getAthleteBySlug } from "@/lib/firestore-server"
 import { athletes as staticAthletes } from "@/lib/data"
 import { AthleteMedia } from "./athlete-media"
 import type { Metadata } from "next"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
 
 // Accounts for whether this year's birthday has happened yet — a plain year subtraction
 // overstates age by one for anyone whose birthday hasn't occurred yet this year.

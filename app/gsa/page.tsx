@@ -22,31 +22,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { AdminShell } from "@/components/admin-shell"
+import { signIn, useAdminUser } from "@/lib/auth"
 import { toast } from "sonner"
 
-const ADMIN_USERNAME = process.env.NEXT_PUBLIC_ADMIN_USERNAME ?? ""
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? ""
-
-function LoginForm({ onLogin }: { onLogin: () => void }) {
-  const [username, setUsername] = useState("")
+function LoginForm() {
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
-    setTimeout(() => {
-      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-        sessionStorage.setItem("gsa_auth", "true")
-        onLogin()
-      } else {
-        setError("Invalid username or password")
-      }
+    try {
+      // On success, useAdminUser in AdminPage picks up the new user and swaps in the dashboard.
+      await signIn(email.trim(), password)
+    } catch (err) {
+      const code = (err as { code?: string }).code
+      setError(
+        code === "auth/too-many-requests"
+          ? "Too many attempts. Wait a few minutes and try again."
+          : code === "auth/network-request-failed"
+            ? "Network error. Check your connection."
+            : "Invalid email or password"
+      )
       setIsLoading(false)
-    }, 500)
+    }
   }
 
   return (
@@ -71,16 +74,17 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
             )}
 
             <div>
-              <label htmlFor="username" className="block text-sm font-medium mb-2">
-                Username
+              <label htmlFor="email" className="block text-sm font-medium mb-2">
+                Email
               </label>
               <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                id="email"
+                autoComplete="username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 bg-background border border-border focus:border-foreground focus:outline-none transition-colors"
-                placeholder="Enter username"
+                placeholder="Enter email"
                 required
               />
             </div>
@@ -92,6 +96,7 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
               <input
                 type="password"
                 id="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 bg-background border border-border focus:border-foreground focus:outline-none transition-colors"
@@ -301,16 +306,9 @@ function BlogDashboard() {
 }
 
 export default function AdminPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const { user, loading } = useAdminUser()
 
-  useEffect(() => {
-    const auth = sessionStorage.getItem("gsa_auth")
-    setIsAuthenticated(auth === "true")
-    setIsLoading(false)
-  }, [])
-
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-2 border-foreground border-t-transparent rounded-full" />
@@ -318,8 +316,8 @@ export default function AdminPage() {
     )
   }
 
-  if (!isAuthenticated) {
-    return <LoginForm onLogin={() => setIsAuthenticated(true)} />
+  if (!user) {
+    return <LoginForm />
   }
 
   return <BlogDashboard />

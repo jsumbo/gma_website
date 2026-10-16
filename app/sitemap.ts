@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next"
-import { getAthletes, getBlogPosts } from "@/lib/firestore"
+import { getAthletes, getBlogPosts } from "@/lib/firestore-server"
 import { athletes as staticAthletes, blogPosts as staticBlogPosts } from "@/lib/data"
 
 const BASE = "https://gayduosa.org"
@@ -7,11 +7,11 @@ const BASE = "https://gayduosa.org"
 // A previous version of this file read static placeholder data instead of the live roster/blog
 // (see git history: "Fix sitemap — use static data instead of Firebase to avoid server crash").
 // The real cause was that metadata routes like this one are statically generated at BUILD time
-// by default, where a stuck Firestore connection can hang the build. `force-dynamic` makes it
-// render per-request instead — the same pattern every other data-fetching page here already
-// uses successfully — so it's safe to read live data again, with a static-data fallback kept
-// for genuine outages.
-export const dynamic = "force-dynamic"
+// by default, where a stuck Firestore SDK connection could hang the build. Reads now go through
+// lib/firestore-server (plain fetch with a timeout), so build-time generation is safe; the page
+// revalidates every 60s like the other public pages, with a static-data fallback kept for
+// genuine outages.
+export const revalidate = 60
 
 // A sitemap entry with an un-slugified value (spaces, commas, etc.) is worse than no entry —
 // it tells Google to index a URL that looks broken. Only include clean, URL-safe slugs.

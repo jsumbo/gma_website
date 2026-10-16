@@ -13,6 +13,7 @@ import {
   type DocumentData,
 } from "firebase/firestore"
 import { app } from "./firebase"
+import { refreshSiteData } from "@/app/actions/refresh-site-data"
 import type { Athlete, BlogPost, Service, TeamMember } from "./data"
 
 const db = getFirestore(app)
@@ -38,15 +39,18 @@ export async function getAthleteBySlug(slug: string): Promise<Athlete | null> {
 
 export async function createAthlete(data: Omit<Athlete, "id">): Promise<string> {
   const ref = await addDoc(collection(db, "athletes"), data as DocumentData)
+  await refreshSiteData().catch(() => {})
   return ref.id
 }
 
 export async function updateAthlete(id: string, data: Partial<Omit<Athlete, "id">>): Promise<void> {
   await updateDoc(doc(db, "athletes", id), data as DocumentData)
+  await refreshSiteData().catch(() => {})
 }
 
 export async function deleteAthlete(id: string): Promise<void> {
   await deleteDoc(doc(db, "athletes", id))
+  await refreshSiteData().catch(() => {})
 }
 
 export async function getBlogPosts(): Promise<BlogPost[]> {
@@ -88,15 +92,18 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 
 export async function createBlogPost(data: Omit<BlogPost, "id">): Promise<string> {
   const ref = await addDoc(collection(db, "blogPosts"), data as DocumentData)
+  await refreshSiteData().catch(() => {})
   return ref.id
 }
 
 export async function updateBlogPost(id: string, data: Partial<Omit<BlogPost, "id">>): Promise<void> {
   await updateDoc(doc(db, "blogPosts", id), data as DocumentData)
+  await refreshSiteData().catch(() => {})
 }
 
 export async function deleteBlogPost(id: string): Promise<void> {
   await deleteDoc(doc(db, "blogPosts", id))
+  await refreshSiteData().catch(() => {})
 }
 
 export async function getServices(): Promise<Service[]> {
@@ -113,15 +120,18 @@ export async function getServiceById(id: string): Promise<Service | null> {
 
 export async function createService(data: Omit<Service, "id">): Promise<string> {
   const ref = await addDoc(collection(db, "services"), data as DocumentData)
+  await refreshSiteData().catch(() => {})
   return ref.id
 }
 
 export async function updateService(id: string, data: Partial<Omit<Service, "id">>): Promise<void> {
   await updateDoc(doc(db, "services", id), data as DocumentData)
+  await refreshSiteData().catch(() => {})
 }
 
 export async function deleteService(id: string): Promise<void> {
   await deleteDoc(doc(db, "services", id))
+  await refreshSiteData().catch(() => {})
 }
 
 export async function getTeamMembers(): Promise<TeamMember[]> {
@@ -138,13 +148,16 @@ export async function getTeamMemberById(id: string): Promise<TeamMember | null> 
 
 export async function createTeamMember(data: Omit<TeamMember, "id">): Promise<string> {
   const ref = await addDoc(collection(db, "managementTeam"), data as DocumentData)
+  await refreshSiteData().catch(() => {})
   return ref.id
 }
 
 export async function updateTeamMember(id: string, data: Partial<Omit<TeamMember, "id">>): Promise<void> {
   await updateDoc(doc(db, "managementTeam", id), data as DocumentData)
+  await refreshSiteData().catch(() => {})
 }
 
 export async function deleteTeamMember(id: string): Promise<void> {
   await deleteDoc(doc(db, "managementTeam", id))
+  await refreshSiteData().catch(() => {})
 }
