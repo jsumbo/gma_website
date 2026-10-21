@@ -27,7 +27,7 @@ export default async function HomePage() {
           {/* Not `priority`: the photo sits under an ~88% navy overlay, so it shouldn't compete with
               the headline (the LCP element) for bandwidth on first load. Low quality is invisible here. */}
           <Image
-            src="/image.png"
+            src="/martor.jpeg"
             alt=""
             fill
             sizes="100vw"
